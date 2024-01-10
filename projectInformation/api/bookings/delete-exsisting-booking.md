@@ -13,7 +13,6 @@ request url query options:
 example request url:
  https://api.noroff.dev/api/v1/holidaze/bookings/{booking id}
 
-**note:** while all body optins are optinal at leest one of them must be included
 example request object: 
 {
   method: "PUT",

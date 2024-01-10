@@ -3,7 +3,7 @@ the most up to date information is availabe here: https://docs.noroff.dev/holida
 
 **note:** you must autherice your self to use this endpoint. [for more information on authentication see here](../api-guide.md#sending-authentication-token)
 
-complete url: https://api.noroff.dev/api/v1/holidaze/profiles/{userName}
+complete url: https://api.noroff.dev/api/v1/holidaze/bookings/{booking id}
 http method: "GET"
 
 ## request users
@@ -13,7 +13,7 @@ request url query options:
 - _venues (optional): "true" or "false"(default) whether nor not to include venues in the response
 
 example request url:
- https://api.noroff.dev/api/v1/holidaze/profiles/3fa85f64-5717-4562-b3fc-2c963f66afa6
+ https://api.noroff.dev/api/v1/holidaze/bookings/fffa32ea-af8d-4db3-a2be-a87bb3b5e0ba
 
 example request object: 
 {
@@ -25,21 +25,49 @@ example request object:
 
 ## response on success
 
-### https://api.noroff.dev/api/v1/holidaze/profiles/3fa85f64-5717-4562-b3fc-2c963f66afa6 (on 8 jan. 2024)
+### https://api.noroff.dev/api/v1/holidaze/bookings/fffa32ea-af8d-4db3-a2be-a87bb3b5e0ba (on 8 jan. 2024)
 ```json
   {
-    "id": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
-    "dateFrom": "2024-01-10T05:49:38.084Z",
-    "dateTo": "2024-01-10T05:49:38.084Z",
-    "guests": 0,
-    "created": "2024-01-10T05:49:38.084Z",
-    "updated": "2024-01-10T05:49:38.084Z",
+    "id": "fffa32ea-af8d-4db3-a2be-a87bb3b5e0ba",
+    "dateFrom": "2023-10-31T23:00:00.000Z",
+    "dateTo": "2023-11-21T23:00:00.000Z",
+    "guests": 1,
+    "created": "2023-11-22T09:15:19.175Z",
+    "updated": "2023-11-22T09:15:19.175Z",
+    "venue": {
+      "id": "987eb21d-0603-47f6-94d0-2e9bb57b4700",
+      "name": "zzz",
+      "description": "lololo",
+      "media": [
+        "https://hips.hearstapps.com/hmg-prod/images/best-winter-cabins-1638300737.jpg"
+      ],
+      "price": 2,
+      "maxGuests": 2,
+      "rating": 0,
+      "created": "2023-09-23T00:17:44.422Z",
+      "updated": "2023-09-23T00:17:44.422Z",
+      "meta": {
+        "wifi": true,
+        "parking": true,
+        "breakfast": true,
+        "pets": false
+      },
+      "location": {
+        "address": "Unknown",
+        "city": "geneva",
+        "zip": "Unknown",
+        "country": "switzerland",
+        "continent": "Unknown",
+        "lat": 0,
+        "lng": 0
+      }
+    }
   }
 ```
 
 ## response on bad url option
 
-none-exsisting id:
+none-exsisting userName:
 ```json
   {
     "errors": [
