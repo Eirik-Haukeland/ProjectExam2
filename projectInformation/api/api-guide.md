@@ -14,6 +14,11 @@ possible paths:
 - [/bookings (POST method) create a booking](./bookings/create-a-booking.md)
 - [/bookings/{id} (PUT method) change a booking](./bookings/change-exsisting-booking.md)
 - [/bookings/{id} (DELETE method) delete a booking](./bookings/delete-exsisting-booking.md)
+- [/venues (GET method) get all venues](./venues/get-all-venues.md)
+- [/venues/{id} (GET method) get one venue](./venues/get-a-venue.md)
+- [/venues (POST method) create a venue](./venues/create-a-venue.md)
+- [/venues/{id} (PUT method) change a venue](./venues/change-exsisting-venue.md)
+- [/venues/{id} (DELETE method) delete a venue](./venues/delete-exsisting-venue.md)
 
 ## test user
 
@@ -38,13 +43,13 @@ email: test_ebh@stud.noroff.no
 to get an accessToken for this user execute this command in your terminal:
 ```sh
   curl -X 'POST' \
-  'https://api.noroff.dev/api/v1/holidaze/auth/login' \
-  -H 'accept: application/json' \
-  -H 'Content-Type: application/json' \
-  -d '{
-    "email": "test_ebh@stud.noroff.no",
-    "password": "12345678"
-  }'
+    'https://api.noroff.dev/api/v1/holidaze/auth/login' \
+    -H 'accept: application/json' \
+    -H 'Content-Type: application/json' \
+    -d '{
+      "email": "test_ebh@stud.noroff.no",
+      "password": "12345678"
+    }'
 ```
 
 ## sending authentication token
