@@ -1,0 +1,26 @@
+* :has( > .main) {
+    --page-max-width: 900px;
+    --page-spacing-horizontal: 5rem;
+    --page-grid-gap: 1.5rem;
+
+    display: grid;
+    grid-template-rows: min-content auto max-content;
+    place-items: center;
+    gap: var(--page-grid-gap);
+    
+    margin-top: calc(var(--page-grid-gap) / 2);
+    min-height: 100vh;
+
+    width: min(var(--page-max-width), (100vw - var(--page-spacing-horizontal)));
+    margin-inline: auto;
+} 
+
+.main {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2rem;
+
+    height: 100%;
+    width: 100%;
+}
