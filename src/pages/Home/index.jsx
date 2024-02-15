@@ -4,12 +4,22 @@ import Card from "../../components/Card";
 import { useVenuesStore } from "../../store"
 import { useEffect } from "react";
 
-export default () => {
-    const venues = useVenuesStore((state) => state.venues);
-    const getVenues = useVenuesStore((state) => state.getVenues);
-    const lastPage = useVenuesStore((store) => store.lastPage)
+import { shallow } from "zustand/shallow";
 
-    useEffect(() => {getVenues()}, [])
+export default () => {
+    const {venues, lastPage, getVenues, clearVenues} = useVenuesStore((state) => ({
+        venues: state.venues,
+        lastPage: state.lastPage,
+        getVenues: state.getVenues,
+        clearVenues: state.clearVenues
+        }),
+        shallow
+    );
+    
+    useEffect(() => {
+        clearVenues()
+        getVenues()
+    }, [])
 
     return (
         <>  

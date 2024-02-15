@@ -2,6 +2,7 @@ import { createWithEqualityFn } from "zustand/traditional"
 import isCounty from "./utils/isCounty"
 
 export const useErrorStore = createWithEqualityFn((set) => ({
+
    errors: [],
    setError: (newErrors) =>  {
         if (typeof newErrors === "string" && newErrors.trim().length > 0) {
@@ -30,7 +31,7 @@ export const useVenuesStore = createWithEqualityFn((set, get) => ({
             const limit = 12
             const offset = get().offset
             const response = await fetch(`https://api.noroff.dev/api/v1/holidaze/venues?offset=${offset}&limit=${limit}`)
-                
+
             if (response.ok) {
                 const json = await response.json()
                 set((state) => ({venues: [...state.venues, ...json]}))

@@ -8,4 +8,3 @@ export default function isCounty(countrie) {
 
     return knownCountries.includes(countrie.trim().toLowerCase())
 }
-
