@@ -3,6 +3,7 @@ import homeCss from "./home.module.css"
 import Card from "../../components/Card";
 import { useVenuesStore } from "../../store"
 import { useEffect } from "react";
+
 import { shallow } from "zustand/shallow";
 
 export default () => {

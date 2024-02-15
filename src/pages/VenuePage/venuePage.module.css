@@ -1,0 +1,63 @@
+.container {
+    width: 100%;
+    display: grid;
+    grid-template: 
+        "title title" min-content
+        "img order" auto
+        "desc desc" min-content
+        / auto min-content;
+    grid-gap: 1.5rem;
+}
+
+.titleArea {
+    grid-area: title;
+
+    margin: 0;
+    margin-top: .25em;
+
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.titleArea > * {
+    margin: 0;
+}
+
+.img {
+    grid-area: img;
+}
+
+.desc {
+    grid-area: desc;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.desc > p {
+    margin: 0;
+    height: 100%;
+    overflow-y: auto;
+}
+
+.order {
+    grid-area: order;
+    width: min-content;
+    height: min-content;
+
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.priceAndButton {
+    display: flex;
+    justify-content: space-between;
+    align-items: end;
+}
+
+.priceAndButton > span {
+    font-size: 1.5rem;
+}

@@ -3,7 +3,7 @@ the most up to date information is availabe here: https://docs.noroff.dev/holida
 
 **note:** you must autherice your self to use this endpoint. [for more information on authentication see here](../api-guide.md#sending-authentication-token)
 
-complete url: https://api.noroff.dev/api/v1/holidaze/profiles/{userName}
+complete url: https://api.noroff.dev/api/v1/holidaze/venues/{venueId}
 http method: "GET"
 
 ## request users
@@ -13,7 +13,7 @@ request url query options:
 - _owner (optional): "true" or "false"(default) whether nor not to include information about the owner
 
 example request url:
- https://api.noroff.dev/api/v1/holidaze/profiles/3fa85f64-5717-4562-b3fc-2c963f66afa6
+ https://api.noroff.dev/api/v1/holidaze/venues/3fa85f64-5717-4562-b3fc-2c963f66afa6
 
 example request object: 
 {
