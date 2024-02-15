@@ -262,6 +262,7 @@ export const useNewBooking = createWithEqualityFn((set, get) => ({
         }
 
         let nthDate = new Date(dateFrom)
+        // milliseconds * seconds * minutes * hours
         const dayInMillisecounds = 1000 * 60 * 60 * 24 
         let dateCount = 1
         
@@ -284,5 +285,133 @@ export const useNewBooking = createWithEqualityFn((set, get) => ({
             console.log(numberOfGuests)
             set(({ guests: numberOfGuests }))
         }
+    }
+}))
+
+export const useAuthenticationInfromation = createWithEqualityFn((set, get) => ({
+    id: "",
+    name: "",
+    email: "",
+    avatar: null,
+    venueManager: false,
+    accessToken: "",
+    formErrors: [],
+    register: (password) => {
+        let faultyRequierments = false
+        
+        const name = get().name
+        const nameRegex = /\w+/
+        if (!nameRegex.test(name)) {
+            faultyRequierments = true
+            set((state) => ({
+                formErrors: [...state.formErrors, {filed: "name", errorText: "username must only be letters, number, and underscore(_)"}]
+            }))
+        }
+        
+        const email = get().email
+        const emailRegex = /\w+@{stud.}?noroff.no/
+        if (!emailRegex.test(email)) {
+            faultyRequierments = true
+            set((state) => ({
+                formErrors: [...state.formErrors, {filed: "email", errorText: "email must be a valid stud.noroff.no or noroff.no email address"}]
+            }))
+        }
+
+        if (password.length < 9 ) {
+            faultyRequierments = true
+            set((state) => ({
+                formErrors: [...state.formErrors, {filed: "password", errorText: "password must be longer than 8 character"}]
+            }))
+        }
+
+        if (faultyRequierments) {
+            return
+        }
+
+        let body = {
+            "name": name,
+            "email": email,
+            "password": password,
+        }
+
+        if (typeof get().avatar === 'string') {
+            body[avatar] = get().avatar
+        }
+
+        if (get().venueManager) {
+            body[venueManager] = true
+        }
+
+        fetch('https://api.noroff.dev/api/v1/holidaze/auth/register', {
+            method: "POST",
+            body
+        })
+        .then(response => response.json)
+        .then(json => {
+            if (!json.ok) {
+
+            }
+
+            
+        })
+    },
+    login: (password) => {
+        let faultyRequierments = false
+        
+        const name = get().name
+        const nameRegex = /\w+/
+        if (!nameRegex.test(name)) {
+            faultyRequierments = true
+            set((state) => ({
+                formErrors: [...state.formErrors, {filed: "name", errorText: "username must only be letters, number, and underscore(_)"}]
+            }))
+        }
+        
+        const email = get().email
+        const emailRegex = /\w+@{stud.}?noroff.no/
+        if (!emailRegex.test(email)) {
+            faultyRequierments = true
+            set((state) => ({
+                formErrors: [...state.formErrors, {filed: "email", errorText: "email must be a valid stud.noroff.no or noroff.no email address"}]
+            }))
+        }
+
+        if (password.length < 9 ) {
+            faultyRequierments = true
+            set((state) => ({
+                formErrors: [...state.formErrors, {filed: "password", errorText: "password must be longer than 8 character"}]
+            }))
+        }
+
+        if (faultyRequierments) {
+            return
+        }
+
+        let body = {
+            "name": name,
+            "email": email,
+            "password": password,
+        }
+
+        if (typeof get().avatar === 'string') {
+            body[avatar] = get().avatar
+        }
+
+        if (get().venueManager) {
+            body[venueManager] = true
+        }
+
+        fetch('https://api.noroff.dev/api/v1/holidaze/auth/login', {
+            method: "POST",
+            body
+        })
+        .then(response => response.json)
+        .then(json => {
+            if (!json.ok) {
+
+            }
+
+            
+        })
     }
 }))
