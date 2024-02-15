@@ -3,8 +3,9 @@
     display: grid;
     grid-template: 
         "title title" min-content
-        "img order" auto
+        "img order" 30rem
         "desc desc" min-content
+        "table table" min-content
         / auto min-content;
     grid-gap: 1.5rem;
 }
@@ -12,12 +13,15 @@
 .titleArea {
     grid-area: title;
 
-    margin: 0;
-    margin-top: .25em;
-
+    width: 100%;
     display: flex;
     justify-content: space-between;
+    flex-wrap: wrap;
     align-items: center;
+}
+
+.titleArea > h1 {
+    text-wrap: nowrap;
 }
 
 .titleArea > * {
@@ -40,16 +44,22 @@
     margin: 0;
     height: 100%;
     overflow-y: auto;
+    padding-inline: .5rem;
+}
+
+.desc > h2 {
+    margin: 0;
+    margin-top: .5em;
 }
 
 .order {
     grid-area: order;
     width: min-content;
-    height: min-content;
+    height: 100%;
+    align-self: center;
 
-    display: flex;
-    flex-direction: column;
-    gap: 1rem;
+    display: grid;
+    justify-content: space-between;
 }
 
 .priceAndButton {
@@ -60,4 +70,149 @@
 
 .priceAndButton > span {
     font-size: 1.5rem;
+}
+
+.numberOfGuests {
+    display: flex;
+    flex-direction: column;
+    gap: .5rem;
+}
+
+.infoTable {
+    grid-area: table;
+}
+
+.infoTable > tr {
+    display: flex;
+    justify-content: space-between;
+    padding-inline: .5rem;
+}
+
+.infoTable > tr:nth-child(odd) {
+    background-color: hsla(0, 0%, 0%, 10%);
+}
+
+@media (max-width: 900px) {
+    .container {
+        grid-template: 
+        "title title" min-content
+        "img img" 25rem
+        "order desc" 30rem
+        "table table" min-content
+        / 1fr 1fr; 
+    }
+
+    .titleArea > h1 {
+        font-size: 2.5rem;
+    }
+
+    .desc > h2 {
+        margin: 0;
+    }
+}
+
+@media (max-width: 650px) {
+    .container {
+        grid-template: 
+        "title title title" max-content
+        "img img img" 20rem
+        ". order ." min-content
+        ". desc ." min-content
+        ". table ." min-content
+        / auto min-content auto;
+    }
+
+    .titleArea {
+        height: min-content;
+    }
+
+    .titleArea > *:nth-child(2) {
+        height: 2rem;
+    }
+
+    .order {
+        grid-template-columns: repeat(2, 1fr);
+        grid-template-rows: min-content 1fr;
+        width: 100%;
+        justify-content: space-between;
+        gap: 1rem;
+    }
+
+    .order > *:first-child {
+        grid-column: 1;
+        grid-row: span 2;
+        gap: .5rem;
+    }
+
+    /* changing inside the calander component */
+    .order > *:first-child > *:last-child > * {
+        padding-bottom: 0;
+    }
+
+    .priceAndButton {
+        flex-direction: column;
+    }
+
+    .numberOfGuests {
+        width: min-content;
+        justify-self: flex-end;
+    }
+
+    .numberOfGuests > label,
+    .priceAndButton > span {
+        text-wrap: nowrap;
+    }
+}
+
+@media (max-width: 580px) {
+    .titleArea > h1 {
+        font-size: 1.75rem;
+    }
+
+    .titleArea > *:nth-child(2) {
+        height: 1.5rem;
+    }
+
+    .order {
+        display: flex;
+        flex-direction: column;
+        width: min-content;
+        gap: .75rem;
+    }
+
+    .order > *:not(:first-child) {
+        width: 100%;
+    }
+
+    .priceAndButton {
+        flex-direction: row;
+    }
+
+    .numberOfGuests {
+        width: min-content;
+        justify-self: flex-end;
+    }
+
+    .desc > p {
+        padding-inline: unset;
+    }
+}
+
+@media (max-width: 450px) {
+    .container {
+        grid-template: 
+        "title" max-content
+        "img" 20rem
+        "order" min-content
+        "desc" min-content
+        "table" min-content
+        / auto; 
+        justify-content: center;
+    }
+
+    .titleArea > h1 {
+        font-size: 1.5rem;
+    }
+
+
 }

@@ -124,58 +124,58 @@ export const useCurrentVenue = createWithEqualityFn((set, get) => ({
                 bookings: oldBookings } = get()
                 
             if (newId !== oldId && typeof newId === "string") { 
-                set(() => ({ id: newId }))
+                set(({ id: newId }))
             }
             if (newName !== oldName && typeof newName === "string") { 
-                set(() => ({ name: newName }))
+                set(({ name: newName }))
             }
             if (newDescription !== oldDescription && typeof newDescription === "string") { 
-                set(() => ({ description: newDescription }))
+                set(({ description: newDescription }))
             }
             if (newMedia !== oldMedia && Array.isArray(newMedia)) { 
-                set(() => ({ media: newMedia }))
+                set(({ media: newMedia }))
             }
             if (newPrice !== oldPrice && typeof newPrice === "number") { 
-                set(() => ({ price: newPrice }))
+                set(({ price: newPrice }))
             }
             if (newMaxGuests !== oldMaxGuests && typeof newMaxGuests === "number") { 
-                set(() => ({ maxGuests: newMaxGuests }))
+                set(({ maxGuests: newMaxGuests }))
             }
             if (newRating !== oldRating && typeof newRating === "number") { 
-                set(() => ({ rating: newRating }))
+                set(({ rating: newRating }))
             }
             if (newCreated !== oldCreated && typeof newCreated === "string") { 
-                set(() => ({ created: newCreated }))
+                set(({ created: newCreated }))
             }
             if (newUpdated !== oldUpdated && typeof newUpdated === "string") { 
-                set(() => ({ updated: newUpdated }))
+                set(({ updated: newUpdated }))
             }
             if (newHasWifi !== oldHasWifi && typeof newHasWifi === "boolean") { 
-                set(() => ({ hasWifi: newHasWifi }))
+                set(({ hasWifi: newHasWifi }))
             }
             if (newHasParking !== oldHasParking && typeof newHasParking === "boolean") { 
-                set(() => ({ hasParking: newHasParking }))
+                set(({ hasParking: newHasParking }))
             }
             if (newServesBreakfast !== oldServesBreakfast && typeof newServesBreakfast === "boolean") { 
-                set(() => ({ servesBreakfast: newServesBreakfast }))
+                set(({ servesBreakfast: newServesBreakfast }))
             }
             if (newAllowsPets !== oldAllowsPets && typeof newAllowsPets === "boolean") { 
-                set(() => ({ allowsPets: newAllowsPets }))
+                set(({ allowsPets: newAllowsPets }))
             }
             if (newAddress !== oldAddress && typeof newAddress === "string") { 
-                set(() => ({ address: newAddress }))
+                set(({ address: newAddress }))
             }
             if (newCity !== oldCity && typeof newCity === "string") { 
-                set(() => ({ city: newCity }))
+                set(({ city: newCity }))
             }
             if (newCountry !== oldCountry && typeof newCountry === "string" && isCounty(newCountry)) { 
-                set(() => ({ country: newCountry }))
+                set(({ country: newCountry }))
             }
             if (newContinent !== oldContinent && typeof newContinent === "string") { 
-                set(() => ({ continent: newContinent }))
+                set(({ continent: newContinent }))
             }
             if (newZip !== oldZip && typeof newZip === "string") { 
-                set(() => ({ zip: newZip }))
+                set(({ zip: newZip }))
             }
             if (newBookings !== oldBookings && Array.isArray(newBookings)) { 
 
@@ -200,7 +200,7 @@ export const useCurrentVenue = createWithEqualityFn((set, get) => ({
                 }, [])
 
 
-                set(() => ({ bookings: bookingsToSet }))
+                set(({ bookings: bookingsToSet }))
             }
         }
     }
@@ -251,7 +251,7 @@ export const useNewBooking = createWithEqualityFn((set, get) => ({
         console.warn("you are not done here: store.js: useNewBooking.createABooking")
     },
     setDates: ({dateFrom, dateTo}) => {
-        set(() => ({
+        set(({
             dateFrom: new Date(dateFrom),
             dateTo: new Date(dateTo)
         }))
@@ -271,18 +271,18 @@ export const useNewBooking = createWithEqualityFn((set, get) => ({
 
         set(({numberOfDates: dateCount}))
     },
-    clearBooking: () => set(() => ({
-        dateFrom: '',
-        dateTo: '',
+    clearBooking: () => set(({
+        dateFrom: new Date(),
+        dateTo: new Date(),
         guests: 1,
         venueId: "",
+        numberOfDates: 1,
     })),
-    setVenueId: (venueId) => set(() => ({venueId})),
+    setVenueId: (venueId) => set(({venueId})),
     setGuests: (numberOfGuests) => {
         if (numberOfGuests <= useCurrentVenue.getState().maxGuests) {
-            set(() => ({
-                guests: numberOfGuests
-            }))
+            console.log(numberOfGuests)
+            set(({ guests: numberOfGuests }))
         }
     }
 }))

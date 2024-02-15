@@ -59,6 +59,11 @@ button:focus-visible {
   outline: 4px auto -webkit-focus-ring-color;
 }
 
+button.primary {
+  background-color: hsl(214, 64%, 30%);
+  color: white;
+}
+
 @media (prefers-color-scheme: light) {
   :root {
     color: #213547;
@@ -69,5 +74,9 @@ button:focus-visible {
   }
   button {
     background-color: #f9f9f9;
+  }
+  button.primary {
+    background-color: hsl(214 100% 62%);
+    color: white;
   }
 }
