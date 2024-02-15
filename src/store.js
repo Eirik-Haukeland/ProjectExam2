@@ -296,6 +296,7 @@ export const useAuthenticationInfromation = createWithEqualityFn((set, get) => (
     venueManager: false,
     accessToken: "",
     formErrors: [],
+    isLoggedIn: false,
     register: (password) => {
         let faultyRequierments = false
         
@@ -334,8 +335,9 @@ export const useAuthenticationInfromation = createWithEqualityFn((set, get) => (
             "password": password,
         }
 
-        if (typeof get().avatar === 'string') {
-            body[avatar] = get().avatar
+        const avatar = get().avatar
+        if (typeof avatar === 'string') {
+            body[avatar] = avatar
         }
 
         if (get().venueManager) {
@@ -346,26 +348,41 @@ export const useAuthenticationInfromation = createWithEqualityFn((set, get) => (
             method: "POST",
             body
         })
-        .then(response => response.json)
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('something went wrong when regitering account pleece try again later')
+            }
+            
+            return response.json})
         .then(json => {
-            if (!json.ok) {
+            if (json.errors.length > 0) {
+                json.errors.forEach(errorObj => {
+                    set(status => ({
+                        formErrors: [...status.formErrors, {filed: errorObj?.path[0]||"general error", errorText: errorObj.message}]
+                    }))
+                })
 
+                return
             }
 
-            
+            set(({
+                id: json.id,
+                name: json.name,
+                email: json.email,
+                avatar: json.avatar,
+                venueManager: json.venueManager,
+            }))
+
+            get().login(password) 
+        })
+        .catch(error => {
+            set(status => ({
+                formErrors: [...status.formErrors, {filed: "general error", errorText: error.message}]
+            }))
         })
     },
     login: (password) => {
         let faultyRequierments = false
-        
-        const name = get().name
-        const nameRegex = /\w+/
-        if (!nameRegex.test(name)) {
-            faultyRequierments = true
-            set((state) => ({
-                formErrors: [...state.formErrors, {filed: "name", errorText: "username must only be letters, number, and underscore(_)"}]
-            }))
-        }
         
         const email = get().email
         const emailRegex = /\w+@{stud.}?noroff.no/
@@ -388,30 +405,41 @@ export const useAuthenticationInfromation = createWithEqualityFn((set, get) => (
         }
 
         let body = {
-            "name": name,
             "email": email,
             "password": password,
-        }
-
-        if (typeof get().avatar === 'string') {
-            body[avatar] = get().avatar
-        }
-
-        if (get().venueManager) {
-            body[venueManager] = true
         }
 
         fetch('https://api.noroff.dev/api/v1/holidaze/auth/login', {
             method: "POST",
             body
         })
-        .then(response => response.json)
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('something went wrong when regitering account pleece try again later')
+            }
+            
+            return response.json})
         .then(json => {
-            if (!json.ok) {
-
+            if (json.errors.length > 0) {
+                json.errors.forEach(errorObj => {
+                    set(status => ({
+                        formErrors: [...status.formErrors, {filed: errorObj.path[0], errorText: errorObj.message}]
+                    }))
+                })
             }
 
-            
+            set(({
+                name: json.name,
+                email: json.email,
+                avatar: json.avatar,
+                venueManager: json.venueManager,
+                accessToken: `Bearer ${json.accessToken}`
+            }))
+        })
+        .catch(error => {
+            set(status => ({
+                formErrors: [...status.formErrors, {filed: "general error", errorText: error.message}]
+            }))
         })
     }
 }))
