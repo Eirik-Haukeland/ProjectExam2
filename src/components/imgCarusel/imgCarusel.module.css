@@ -1,0 +1,19 @@
+.carusellConteiner {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    grid-template-rows: auto min-content;
+}
+
+.carusellImg {
+    height: 100%;
+    width: 100%;
+    background-size: cover;
+    background-position: center;
+}
+
+
+.carusellConteiner > .carusellImg {
+    grid-column: span 2;
+    height: initial;
+    width: initial;
+}

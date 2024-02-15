@@ -1,0 +1,11 @@
+.starContainer {
+    display: flex;
+    gap: .24rem;
+
+    height: 2.5rem;
+}
+
+.starContainer > img {
+    height: 100%;
+    width: auto;
+}
