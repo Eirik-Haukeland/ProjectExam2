@@ -128,7 +128,7 @@ function RegisterFrom () {
 
 
 export default function Auth() {
-    // const moduleRef = useRef(null)
+    const moduleRef = useRef(null)
 
     const {isModuleOpen, closeModule, modulePageOpen, openModule} = useAuthenticationInfromation(status => ({
         isModuleOpen: status.isModuleOpen,
@@ -137,16 +137,16 @@ export default function Auth() {
         openModule: status.openModule,
     }), shallow)
 
-    // useEffect(() => {
-    //     if (isModuleOpen) {
-    //         moduleRef?.current?.showModal()
-    //     } else {
-    //         moduleRef?.current?.close()
-    //     }
-    // }, [isModuleOpen])
+    useEffect(() => {
+        if (isModuleOpen) {
+            moduleRef?.current?.showModal()
+        } else {
+            moduleRef?.current?.close()
+        }
+    }, [isModuleOpen])
 
     return (
-        <>
+        <dialog ref={moduleRef}>
             <div className={cssAuth.formSwitchButtons} >
                 <button 
                     type="button"
@@ -162,6 +162,6 @@ export default function Auth() {
                 ? <RegisterFrom />
                 : <LoginForm />
             }
-        </>
+        </dialog>
     )
 }
