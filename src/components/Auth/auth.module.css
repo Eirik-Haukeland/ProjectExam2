@@ -1,0 +1,47 @@
+.formSwitchButtons{
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    
+    margin-bottom: 1rem;
+}
+
+.formSwitchButtons > button:first-child {
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+}
+
+.formSwitchButtons > button:last-child {
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
+}
+
+.form {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    column-gap: .5rem;
+    row-gap: .75rem;
+}
+
+.form[hidden] {
+    display: none;
+}
+
+.textInput {
+    grid-column: span 2;
+
+    display: flex;
+    flex-direction: column;
+}
+
+.checkboxInput {
+    grid-column: span 2;
+
+    margin-bottom: .5rem;
+
+    display: grid;
+    grid-template-columns: min-content 1fr;
+}
+
+.checkboxInput > span {
+    grid-column: span 2;
+}

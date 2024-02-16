@@ -1,15 +1,29 @@
 import { Link } from "react-router-dom"
 import HeaderCss from "./header.module.css"
+import { useAuthenticationInfromation } from '../../store.js'
+import { shallow } from "zustand/shallow"
 
 export default () => {
+
+    const {openModule} = useAuthenticationInfromation(status => ({
+        openModule: status.openModule
+    }), shallow)
+
+    const moduleOpener = (e) => {
+        e.prevetDefault
+
+        const {target: {innerText: modulePage}} = e
+        openModule(modulePage)
+    }
+
     return (
         <header className={HeaderCss.headerContainer}>
-            <Link className={HeaderCss.logo}>Holidaze</Link>
+            <Link to="/" className={HeaderCss.logo}>Holidaze</Link>
 
             <nav className={HeaderCss.menu}>
-                <Link>login</Link>
-                <Link>register</Link>
-                <Link>home</Link>
+                <Link onClick={moduleOpener}>login</Link>
+                <Link onClick={moduleOpener}>register</Link>
+                <Link to="/">home</Link>
             </nav>
         </header>
     )

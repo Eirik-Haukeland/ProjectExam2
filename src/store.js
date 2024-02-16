@@ -282,7 +282,6 @@ export const useNewBooking = createWithEqualityFn((set, get) => ({
     setVenueId: (venueId) => set(({venueId})),
     setGuests: (numberOfGuests) => {
         if (numberOfGuests <= useCurrentVenue.getState().maxGuests) {
-            console.log(numberOfGuests)
             set(({ guests: numberOfGuests }))
         }
     }
@@ -297,64 +296,34 @@ export const useAuthenticationInfromation = createWithEqualityFn((set, get) => (
     accessToken: "",
     formErrors: [],
     isLoggedIn: false,
-    register: (password) => {
-        let faultyRequierments = false
+    isModuleOpen: false,
+    modulePageOpen: 'register',
+    openModule: (modulepage) => {
+        set(({
+            isModuleOpen: true,
+            modulePageOpen: modulepage
+        }))
+    },
+    closeModule: () => set(({isModuleOpen: false})),
+    register: (body) => {
+        console.log("asdfasdf")
+        console.log(body)
         
-        const name = get().name
-        const nameRegex = /\w+/
-        if (!nameRegex.test(name)) {
-            faultyRequierments = true
-            set((state) => ({
-                formErrors: [...state.formErrors, {filed: "name", errorText: "username must only be letters, number, and underscore(_)"}]
-            }))
-        }
-        
-        const email = get().email
-        const emailRegex = /\w+@{stud.}?noroff.no/
-        if (!emailRegex.test(email)) {
-            faultyRequierments = true
-            set((state) => ({
-                formErrors: [...state.formErrors, {filed: "email", errorText: "email must be a valid stud.noroff.no or noroff.no email address"}]
-            }))
-        }
-
-        if (password.length < 9 ) {
-            faultyRequierments = true
-            set((state) => ({
-                formErrors: [...state.formErrors, {filed: "password", errorText: "password must be longer than 8 character"}]
-            }))
-        }
-
-        if (faultyRequierments) {
-            return
-        }
-
-        let body = {
-            "name": name,
-            "email": email,
-            "password": password,
-        }
-
-        const avatar = get().avatar
-        if (typeof avatar === 'string') {
-            body[avatar] = avatar
-        }
-
-        if (get().venueManager) {
-            body[venueManager] = true
-        }
-
         fetch('https://api.noroff.dev/api/v1/holidaze/auth/register', {
             method: "POST",
             body
         })
         .then(response => {
+            console.log(body, response)
             if (!response.ok) {
-                throw new Error('something went wrong when regitering account pleece try again later')
+                throw new Error('something went wrong when regitering account please try again later')
             }
             
             return response.json})
         .then(json => {
+            console.log('asdfasf')
+            console.log(json)
+
             if (json.errors.length > 0) {
                 json.errors.forEach(errorObj => {
                     set(status => ({
@@ -381,41 +350,15 @@ export const useAuthenticationInfromation = createWithEqualityFn((set, get) => (
             }))
         })
     },
-    login: (password) => {
-        let faultyRequierments = false
-        
-        const email = get().email
-        const emailRegex = /\w+@{stud.}?noroff.no/
-        if (!emailRegex.test(email)) {
-            faultyRequierments = true
-            set((state) => ({
-                formErrors: [...state.formErrors, {filed: "email", errorText: "email must be a valid stud.noroff.no or noroff.no email address"}]
-            }))
-        }
-
-        if (password.length < 9 ) {
-            faultyRequierments = true
-            set((state) => ({
-                formErrors: [...state.formErrors, {filed: "password", errorText: "password must be longer than 8 character"}]
-            }))
-        }
-
-        if (faultyRequierments) {
-            return
-        }
-
-        let body = {
-            "email": email,
-            "password": password,
-        }
-
+    login: (body) => {
         fetch('https://api.noroff.dev/api/v1/holidaze/auth/login', {
             method: "POST",
             body
         })
         .then(response => {
+            console.log(body)
             if (!response.ok) {
-                throw new Error('something went wrong when regitering account pleece try again later')
+                throw new Error('something went wrong when loging in to your account please try again later')
             }
             
             return response.json})
