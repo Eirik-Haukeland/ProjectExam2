@@ -5,8 +5,9 @@ import { shallow } from "zustand/shallow"
 
 export default () => {
 
-    const {openModule} = useAuthenticationInfromation(status => ({
-        openModule: status.openModule
+    const {openModule, isLoggedIn} = useAuthenticationInfromation(status => ({
+        openModule: status.openModule,
+        isLoggedIn: status.isLoggedIn
     }), shallow)
 
     const moduleOpener = (e) => {
@@ -17,7 +18,7 @@ export default () => {
     }
 
     return (
-        <header className={HeaderCss.headerContainer}>
+        <header className={`${HeaderCss.headerContainer} ${isLoggedIn ? HeaderCss.color : ''}`}>
             <Link to="/" className={HeaderCss.logo}>Holidaze</Link>
 
             <nav className={HeaderCss.menu}>
