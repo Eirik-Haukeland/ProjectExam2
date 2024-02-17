@@ -1,18 +1,35 @@
+.dialog {
+    width: 20rem;
+}
+
+.error {
+    color: red;
+
+    &:not(span) {
+        border: .25rem solid red;
+        padding: .15rem;
+
+        &:has(+ form input:focus) {
+            display: none;
+        }
+    }
+}
+
 .formSwitchButtons{
     display: grid;
     grid-template-columns: repeat(2, 1fr);
     
     margin-bottom: 1rem;
-}
 
-.formSwitchButtons > button:first-child {
-    border-top-right-radius: 0;
-    border-bottom-right-radius: 0;
-}
+    & > button:first-child {
+        border-top-right-radius: 0;
+        border-bottom-right-radius: 0;
+    }
 
-.formSwitchButtons > button:last-child {
-    border-top-left-radius: 0;
-    border-bottom-left-radius: 0;
+    & > button:last-child {
+        border-top-left-radius: 0;
+        border-bottom-left-radius: 0;
+    }
 }
 
 .form {
@@ -20,10 +37,6 @@
     grid-template-columns: repeat(2, 1fr);
     column-gap: .5rem;
     row-gap: .75rem;
-}
-
-.form[hidden] {
-    display: none;
 }
 
 .textInput {
