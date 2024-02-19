@@ -36,7 +36,7 @@ function LoginForm() {
     })
 
     return (
-        <form className={cssAuth.form} target="_blank" onSubmit={(e) => { e.preventDefault(); handleSubmit(loginUser)(e)}}>
+        <form className={cssAuth.form} target="_blank" onSubmit={handleSubmit(loginUser)}>
             <div className={cssAuth.textInput}>
                 <label htmlFor="login_userEmail">Email:</label>
                 <input id="login_userEmail" autoComplete="username" autoFocus={modulePageOpen === 'login'} {...loginData('email')} />
@@ -78,10 +78,11 @@ const registerSchema = yup
 
 function RegisterFrom () {
 
-    const {closeModule, modulePageOpen, registerUser} = useAuthenticationInfromation(status => ({
+    const {closeModule, modulePageOpen, registerUser, isLoggedIn} = useAuthenticationInfromation(status => ({
         closeModule: status.closeModule,
         modulePageOpen: status.modulePageOpen,
         registerUser: status.register,
+        isLoggedIn: status.isLoggedIn
     }), shallow)
 
     const {
@@ -93,7 +94,13 @@ function RegisterFrom () {
     })
 
     return (
-        <form className={cssAuth.form} onSubmit={(e) => { e.preventDefault(); handleSubmit(registerUser)(e)}}>
+        <form className={cssAuth.form} onSubmit={(e) => {
+            e.preventDefault(); 
+            handleSubmit(registerUser)(e);
+            if (isLoggedIn) {
+                closeModule;
+            }
+            }}>
             <div className={cssAuth.textInput}>
                 <label htmlFor="register_userName">Name:</label>
                 <input id="register_userName" autoFocus={modulePageOpen === 'register'} name="name" {...registerData('name')} />
