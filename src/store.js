@@ -302,13 +302,11 @@ export const useAuthenticationInfromation = createWithEqualityFn((set, get) => (
                 headers: new Headers({'content-type': 'application/json'}),
                 body: JSON.stringify(body)
             })
-
             const json = await response.json()
-            console.log(response, json)
             
-            if (json?.errors[0]?.message === "Profile already exists") {
+            if (json.errors && json.errors[0].message === "Profile already exists") {
                 throw new Error(json.errors[0].message)
-            } 
+            }
             if (!response.ok) {
                 throw new Error('something went wrong when loging in to your account please try again later')
             }
@@ -321,7 +319,10 @@ export const useAuthenticationInfromation = createWithEqualityFn((set, get) => (
                 venueManager: json.venueManager,
             }))
 
-            get().login(password) 
+            get().login({
+                email: body.email,
+                password: body.password
+            }) 
         } catch (error) {
             set(({
                 formError: error.message
@@ -335,17 +336,15 @@ export const useAuthenticationInfromation = createWithEqualityFn((set, get) => (
                 headers: new Headers({'content-type': 'application/json'}),
                 body: JSON.stringify(body)
             })
-
             const json = await response.json()   
-            console.log(response, json, json.errors, json?.errors[0]?.message)
             
-            if (json?.errors[0]?.message === "Invalid email or password") {
-                throw new Error(json?.errors[0]?.message)
-            } 
+            if (json.errors && json.errors[0].message === "Invalid email or password") {
+                throw new Error(json.errors[0].message)
+            }
             if (!response.ok) {
                 throw new Error('something went wrong when loging in to your account please try again later')
             }
-            
+
             set(({
                 name: json.name,
                 email: json.email,
@@ -355,9 +354,19 @@ export const useAuthenticationInfromation = createWithEqualityFn((set, get) => (
                 isLoggedIn: true
             }))
         } catch (error) {
+            console.log(error)
             set(({
                 formError: error.message
             }))
         }
-    }
+    },
+    logout: () => set({
+        id: "",
+        name: "",
+        email: "",
+        avatar: null,
+        venueManager: false,
+        accessToken: "",
+        isLoggedIn: false
+    })
 }))
