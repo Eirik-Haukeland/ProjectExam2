@@ -5,10 +5,13 @@ import { shallow } from "zustand/shallow"
 
 export default () => {
 
-    const {openModule, isLoggedIn} = useAuthenticationInfromation(status => ({
+    const {openModule, isLoggedIn, logout} = useAuthenticationInfromation(status => ({
         openModule: status.openModule,
-        isLoggedIn: status.isLoggedIn
+        isLoggedIn: status.isLoggedIn,
+        logout: status.logout
     }), shallow)
+
+    
 
     const moduleOpener = (e) => {
         e.prevetDefault
@@ -22,8 +25,17 @@ export default () => {
             <Link to="/" className={HeaderCss.logo}>Holidaze</Link>
 
             <nav className={HeaderCss.menu}>
-                <Link onClick={moduleOpener}>login</Link>
-                <Link onClick={moduleOpener}>register</Link>
+                {
+                    isLoggedIn
+                    ?   (<>
+                            <Link onClick={logout}>logout</Link>
+                            <Link to="/profile">profile page</Link>
+                        </>)
+                    :   (<>
+                            <Link onClick={moduleOpener}>login</Link>
+                            <Link onClick={moduleOpener}>register</Link>
+                        </>)    
+                }
                 <Link to="/">home</Link>
             </nav>
         </header>
