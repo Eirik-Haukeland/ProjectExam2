@@ -21,14 +21,14 @@ export default () => {
     }
 
     return (
-        <header className={`${HeaderCss.headerContainer} ${isLoggedIn ? HeaderCss.color : ''}`}>
+        <header className={HeaderCss.headerContainer}>
             <Link to="/" className={HeaderCss.logo}>Holidaze</Link>
 
             <nav className={HeaderCss.menu}>
                 {
                     isLoggedIn
                     ?   (<>
-                            <Link onClick={logout}>logout</Link>
+                            <Link to="/" onClick={logout}>logout</Link>
                             <Link to="/profile">profile page</Link>
                         </>)
                     :   (<>

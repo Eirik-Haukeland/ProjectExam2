@@ -1,5 +1,7 @@
 import { createWithEqualityFn } from "zustand/traditional"
+import { persist } from 'zustand/middleware'
 import isCounty from "./utils/isCounty"
+import { useNavigate } from "react-router-dom"
 
 export const useVenuesStore = createWithEqualityFn((set, get) => ({
     venues: [],
@@ -276,13 +278,13 @@ export const useNewBooking = createWithEqualityFn((set, get) => ({
     }
 }))
 
-export const useAuthenticationInfromation = createWithEqualityFn((set, get) => ({
+export const useAuthenticationInfromation = createWithEqualityFn(persist((set, get) => ({
     id: "",
     name: "",
     email: "",
     avatar: null,
     venueManager: false,
-    accessToken: "",
+    accessToken: '',
     formError: "",
     isLoggedIn: false,
     isModuleOpen: false,
@@ -368,5 +370,70 @@ export const useAuthenticationInfromation = createWithEqualityFn((set, get) => (
         venueManager: false,
         accessToken: "",
         isLoggedIn: false
-    })
-}))
+    }),
+    changeProfile: async (data) => {
+        try {
+            if (!get().accessToken.length > 0) {
+                throw new Error('user is not logged in')
+            }
+
+            const errors = []
+            const setItems = {};
+
+            if (data.venueManager !== get().venueManager) {
+                const response = await fetch('https://api.noroff.dev/api/v1/holidaze/profiles/test_ebh', {
+                    method: "PUT",
+                    headers: new Headers({
+                        'content-type': 'application/json',
+                        'Authorization': `${get().accessToken}`}),
+                    body: JSON.stringify({ venueManager: data.venueManager })
+                })
+                
+                if (!response.ok) {
+                    errors.push('something went wrong when updating venue manager status')
+                } else {
+                    const { venueManager } = await response.json()
+                    setItems['venueManager'] = venueManager
+                }
+            }
+
+            if (data.avatar !== (get().avatar || '') || data.removeAvatar){
+                const response = await fetch('https://api.noroff.dev/api/v1/holidaze/profiles/test_ebh/media', {
+                    method: "PUT",
+                    headers: new Headers({
+                        'content-type': 'application/json',
+                        'Authorization': `${get().accessToken}`}),
+                    body: JSON.stringify({ avatar: data.avatar })
+                })
+                
+                if (!response.ok) {
+                    errors.push('something went wrong when updating profile picture status')
+                } else {
+                    const { avatar } = await response.json()
+                    setItems['avatar'] = avatar
+                }
+            }
+
+            set(({ ...setItems }))
+            if (errors.length > 0) {
+                throw new Error(errors.join("\n"))
+            }
+
+            return true
+        } catch (error) {
+            const navigate = useNavigate()
+
+            if (error.message === 'user is not logged in') {
+                navigate('/')
+                return
+            }
+
+            set(({formError: error.message}))
+
+            return false
+        }
+    }
+}), {
+    name: "auth store"
+}
+))
