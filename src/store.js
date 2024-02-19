@@ -1,52 +1,33 @@
 import { createWithEqualityFn } from "zustand/traditional"
 import isCounty from "./utils/isCounty"
 
-export const useErrorStore = createWithEqualityFn((set) => ({
-
-   errors: [],
-   setError: (newErrors) =>  {
-        if (typeof newErrors === "string" && newErrors.trim().length > 0) {
-            newErrors = [newErrors]
-        }
-
-        if (!Array.isArray(newErrors)) {
-            return
-        }
-
-        set((state) => ({ errors: [...state.errors, ...newErrors.map(error => typeof error === "string")]}))
-   },
-   clearErrors: () => {
-        set({ errors: []})
-   }
-}))
-
 export const useVenuesStore = createWithEqualityFn((set, get) => ({
     venues: [],
     offset: 0,
     lastPage: false,
+    venueListErrors: '',
     clearVenues: () => set(() => ({venues: []})),
     getVenues: async () => {
         try {
-            
             const limit = 12
             const offset = get().offset
             const response = await fetch(`https://api.noroff.dev/api/v1/holidaze/venues?offset=${offset}&limit=${limit}`)
 
-            if (response.ok) {
-                const json = await response.json()
-                set((state) => ({venues: [...state.venues, ...json]}))
-                
-                if (json.length < limit) {
-                    set(() => ({ lastPage: true}))
-                } else {
-                    set((state) => ({ offset: state.offset + limit }))
-                }
-            } else {
-                throw new Error("Something went wrong when fetching list of venues")
+            if (!response.ok) {
+                throw new Error()
             }
+            
+            const json = await response.json()
+            set((state) => ({venues: [...state.venues, ...json]}))
+            
+            if (json.length < limit) {
+                set(() => ({ lastPage: true}))
+            } else {
+                set((state) => ({ offset: state.offset + limit }))
+            }
+            
         } catch (error) {
-            console.error(error)
-            useErrorStore.getState().setError(['an error occured when trying to get venues. pleace try again'])
+            set(({venueListErrors: 'an error occured when trying to get venues. pleace try again'}))
         }
     }
 }))
@@ -71,17 +52,16 @@ export const useCurrentVenue = createWithEqualityFn((set, get) => ({
     country: "",
     continent: "",
     bookings: [],
+    fetchErrors: '',
     updateVenue: async (id) => {
         try {
+            const response = await fetch(`https://api.noroff.dev/api/v1/holidaze/venues/${id}?_bookings=true`)
+            const json =  await response.json()
 
-        } catch (error) {
-            useErrorStore.getState().setError(['an error occured when trying to get the venue. pleace try again'])
-        }
-        const response = await fetch(`https://api.noroff.dev/api/v1/holidaze/venues/${id}?_bookings=true`)
-        
-        const json =  await response.json()
+            if (!response.ok) {
+                throw new Error('problem occured when trying to get venues. plese try again later')
+            }
 
-        if (response.ok) {
             const { 
                 id: newId,
                 name: newName,
@@ -195,14 +175,18 @@ export const useCurrentVenue = createWithEqualityFn((set, get) => ({
                             newList = [...newList, newDate]
                         }
                     }
-                  
+                
                     return newList
                 }, [])
 
 
                 set(({ bookings: bookingsToSet }))
             }
+           
+        } catch (error) {
+            set('an error occured when trying to get the venue. pleace try again')
         }
+        
     }
 }))
 
@@ -212,43 +196,48 @@ export const useNewBooking = createWithEqualityFn((set, get) => ({
     guests: 1,
     venueId: "",
     numberOfDates: 1,
+    bookingErrors: '',
     createABooking: async () => {
+        try {
+            const [dateFrom, dateTo, guests, venueId] = get()
 
-        const [dateFrom, dateTo, guests, venueId] = get()
+            const timeStampCheck = RegExp('^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z$')
 
-        const timeStampCheck = RegExp('^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z$')
+            if ( !(timeStampCheck.test(dateFrom) || timeStampCheck.test(dateTo)) ) {
+                throw new Error('Pleace select the dates you want to stay')
+            }
 
-        if ( !(timeStampCheck.test(dateFrom) || timeStampCheck.test(dateTo)) ) {
-            useErrorStore.getState().setError(['Pleace select the dates you want to stay'])
+            if ( guests > 0 && guests < useCurrentVenue.getState().maxGuests ) {
+                throw new Error(`Pleace select an apropiate number of guests. This establishment takes 1 - ${useCurrentVenue.getState().maxGuests} guests)`)
+            }
+
+            if ( venueId.length > 0 && typeof venueId === 'string' ) {
+                throw new Error('an error occured when trying make a booking. pleace try again')
+            }
+
+            const response = await fetch("https://api.noroff.dev/api/v1/holidaze/bookings", 
+                {
+                    method: "POST",
+                    body: {
+                        dateFrom,
+                        dateTo,
+                        guests,
+                        venueId
+                    },
+                    headers: {
+                        Authorization: `Bearer asdfasdf23asdvah2qw344aab....`
+                    }
+                })
+
+            if (!response.ok) {
+                throw new Error ('an error occured when trying make a booking. pleace try again')
+            }
+
+            console.warn("you are not done here: store.js: useNewBooking.createABooking")
+        } catch (error) {
+            set(({bookingErrors: error.message }))
         }
 
-        if ( guests > 0 && guests < useCurrentVenue.getState().maxGuests ) {
-            useErrorStore.getState().setError([`Pleace select an apropiate number of guests. This establishment takes 1 - ${useCurrentVenue.getState().maxGuests} guests)`])
-        }
-
-        if ( venueId.length > 0 && typeof venueId === 'string' ) {
-            useErrorStore.getState().setError(['an error occured when trying make a booking. pleace try again'])
-        }
-
-        const response = await fetch("https://api.noroff.dev/api/v1/holidaze/bookings", 
-            {
-                method: "POST",
-                body: {
-                    dateFrom,
-                    dateTo,
-                    guests,
-                    venueId
-                },
-                headers: {
-                    Authorization: `Bearer asdfasdf23asdvah2qw344aab....`
-                }
-            })
-
-        if (response.ok === false) {
-            useErrorStore.getState().setError(['an error occured when trying make a booking. pleace try again'])
-        }
-
-        console.warn("you are not done here: store.js: useNewBooking.createABooking")
     },
     setDates: ({dateFrom, dateTo}) => {
         set(({
@@ -262,6 +251,7 @@ export const useNewBooking = createWithEqualityFn((set, get) => ({
         }
 
         let nthDate = new Date(dateFrom)
+        // milliseconds * seconds * minutes * hours
         const dayInMillisecounds = 1000 * 60 * 60 * 24 
         let dateCount = 1
         
@@ -281,8 +271,102 @@ export const useNewBooking = createWithEqualityFn((set, get) => ({
     setVenueId: (venueId) => set(({venueId})),
     setGuests: (numberOfGuests) => {
         if (numberOfGuests <= useCurrentVenue.getState().maxGuests) {
-            console.log(numberOfGuests)
             set(({ guests: numberOfGuests }))
         }
     }
+}))
+
+export const useAuthenticationInfromation = createWithEqualityFn((set, get) => ({
+    id: "",
+    name: "",
+    email: "",
+    avatar: null,
+    venueManager: false,
+    accessToken: "",
+    formError: "",
+    isLoggedIn: false,
+    isModuleOpen: false,
+    modulePageOpen: 'register',
+    clearErrors: () => set(({formError: ''})), 
+    openModule: (modulepage) => {
+        set(({
+            isModuleOpen: true,
+            modulePageOpen: modulepage
+        }))
+    },
+    closeModule: () => set(({isModuleOpen: false})),
+    register: async (body = {}) => {
+        try {
+            const response = await fetch('https://api.noroff.dev/api/v1/holidaze/auth/register', {
+                method: "POST",
+                headers: new Headers({'content-type': 'application/json'}),
+                body: JSON.stringify(body)
+            })
+            const json = await response.json()
+            
+            if (json.errors && json.errors[0].message === "Profile already exists") {
+                throw new Error(json.errors[0].message)
+            }
+            if (!response.ok) {
+                throw new Error('something went wrong when loging in to your account please try again later')
+            }
+
+            set(({
+                id: json.id,
+                name: json.name,
+                email: json.email,
+                avatar: json.avatar,
+                venueManager: json.venueManager,
+            }))
+
+            get().login({
+                email: body.email,
+                password: body.password
+            }) 
+        } catch (error) {
+            set(({
+                formError: error.message
+            }))
+        }
+    },
+    login: async (body) => {
+        try {
+            const response = await fetch('https://api.noroff.dev/api/v1/holidaze/auth/login', {
+                method: "POST",
+                headers: new Headers({'content-type': 'application/json'}),
+                body: JSON.stringify(body)
+            })
+            const json = await response.json()   
+            
+            if (json.errors && json.errors[0].message === "Invalid email or password") {
+                throw new Error(json.errors[0].message)
+            }
+            if (!response.ok) {
+                throw new Error('something went wrong when loging in to your account please try again later')
+            }
+
+            set(({
+                name: json.name,
+                email: json.email,
+                avatar: json.avatar,
+                venueManager: json.venueManager,
+                accessToken: `Bearer ${json.accessToken}`,
+                isLoggedIn: true
+            }))
+        } catch (error) {
+            console.log(error)
+            set(({
+                formError: error.message
+            }))
+        }
+    },
+    logout: () => set({
+        id: "",
+        name: "",
+        email: "",
+        avatar: null,
+        venueManager: false,
+        accessToken: "",
+        isLoggedIn: false
+    })
 }))

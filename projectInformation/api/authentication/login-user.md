@@ -11,14 +11,16 @@ request body options:
 - email (**required**): must be a stud.noroff.no or noroff.no email address
 - password (**required**): must be longer than 8 characters
 
-example request object: 
+example request object:
+```json
 {
-  method: "POST,
-  body: {
+  "method": "POST",
+  "body": {
     "email": "test_ebh@stud.noroff.no",
     "password": "12345678"
   }
 }
+```
 
 
 ## response on success full login requset:
