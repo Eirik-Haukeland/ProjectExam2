@@ -1,7 +1,6 @@
 import { createWithEqualityFn } from "zustand/traditional"
 import { persist } from 'zustand/middleware'
 import isCounty from "./utils/isCounty"
-import { useNavigate } from "react-router-dom"
 
 export const useVenuesStore = createWithEqualityFn((set, get) => ({
     venues: [],
@@ -386,12 +385,13 @@ export const useAuthenticationInfromation = createWithEqualityFn(persist((set, g
         accessToken: "",
         isLoggedIn: false
     }),
-    changeProfile: async (data) => {
+    changeProfile: async (data, onSuccess) => {
         try {
             if (!get().accessToken.length > 0) {
                 throw new Error('user is not logged in')
             }
 
+            console.log(data, onSuccess)
             const errors = []
             const setItems = {};
 
@@ -434,18 +434,16 @@ export const useAuthenticationInfromation = createWithEqualityFn(persist((set, g
                 throw new Error(errors.join("\n"))
             }
 
-            return true
+            set(({formError: ''}))
+            onSuccess()
         } catch (error) {
-            const navigate = useNavigate()
-
-            if (error.message === 'user is not logged in') {
-                navigate('/')
+            if (error.message === 'Failed to fetch') {
+                set(({formError: 'something went wrong. check if you are online or try again later'}))
                 return
             }
 
-            set(({formError: error.message}))
 
-            return false
+            set(({formError: error.message}))
         }
     }
 }), {
@@ -455,7 +453,7 @@ export const useAuthenticationInfromation = createWithEqualityFn(persist((set, g
 
 export const useVenueCreateStore = createWithEqualityFn((set) => ({
     venueCreationError: '',
-    createVenue: async (data) => {
+    createVenue: async (body, onSuccess) => {
         try {
             const isLoggedIn = useAuthenticationInfromation.getState().isLoggedIn
             if (!isLoggedIn) {
@@ -467,56 +465,25 @@ export const useVenueCreateStore = createWithEqualityFn((set) => ({
             }
 
             const accessToken = useAuthenticationInfromation.getState().accessToken
-            const body = {
-                name: data.name,
-                description: data.description,
-                media: [...data.media],
-                price: data.price,
-                maxGuests: data.maxGuests,
-                meta: {
-                    wifi: data.wifi || false,
-                    parking: data.parking || false,
-                    breakfast: data.breakfast || false,
-                    pets: data.pets || false
-                }
-            }
-
-            const location = {}
-            if (address) {
-                location["address"] = data.address
-            }
-            if (city) {
-                location["city"] = data.city
-            }
-            if (zip) {
-                location["zip"] = data.zip
-            }
-            if (isCounty(data.country)) {
-                location["country"] = data.country
-            }
-            if (continent) {
-                location["continent"] = data.continent
-            }
-            body[location] = location
-            
             const response = await fetch('https://api.noroff.dev/api/v1/holidaze/venues', {
                 method: "POST",
                 headers: new Headers({
                     'content-type': 'application/json',
                     'Authorization': `${accessToken}`}),
                 body: JSON.stringify(body)
-            })
-
-            const json = await response.json()
-            
-            if (json?.errors) {
-                console.log(json.Errors)
-            }
-            
+            })                   
             if (!response.ok) {
                 throw new Error("something went wrong when posting a new venue please try again later")
             }
+
+            set(({venueCreationError: ''}))
+            onSuccess()
         } catch (error) {
+            if (error.message === 'Failed to fetch') {
+                set(({venueCreationError: 'something went wrong. check if you are online or try again later'}))
+                return
+            }
+
             set(({venueCreationError: error.message}))
         }
     }
