@@ -215,30 +215,30 @@ export const useNewBooking = createWithEqualityFn((set, get) => ({
             const {dateFrom, dateTo, guests, venueId} = get()
 
             
-            const timeStampCheck = RegExp('^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}.\d{3}Z$')
+            const timeStampCheck = RegExp(/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}.\d{3}Z$/)
             
             if ( !(timeStampCheck.test(dateFrom.toISOString()) || timeStampCheck.test(dateTo.toISOString())) ) {
-                console.log(dateFrom.toISOString(), dateTo.toISOString(), guests, venueId)
                 throw new Error('Pleace select the dates you want to stay')
             }
-
-            if ( guests > 0 && guests < useCurrentVenue.getState().maxGuests ) {
+            
+            if ( guests <= 0 || guests > useCurrentVenue.getState().maxGuests ) {
                 throw new Error(`Pleace select an apropiate number of guests. This establishment takes 1 - ${useCurrentVenue.getState().maxGuests} guests)`)
             }
-
-            if ( venueId.length > 0 && typeof venueId === 'string' ) {
+            
+            if ( venueId.length <= 0 || typeof venueId !== 'string' ) {
                 throw new Error('an error occured when trying make a booking. pleace try again')
             }
-
+            
+            console.log(guests, venueId)
             const response = await fetch("https://api.noroff.dev/api/v1/holidaze/bookings", 
                 {
                     method: "POST",
-                    body: {
+                    body: JSON.stringify({
                         dateFrom,
                         dateTo,
                         guests,
                         venueId
-                    },
+                    }),
                     headers: new Headers({
                         'content-type': 'application/json',
                         'Authorization': `${accessToken}`})
