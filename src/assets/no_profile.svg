@@ -24,11 +24,11 @@
      inkscape:deskcolor="#d1d1d1"
      inkscape:document-units="px"
      inkscape:zoom="52.432795"
-     inkscape:cx="4.5963599"
+     inkscape:cx="4.605896"
      inkscape:cy="4.8729044"
      inkscape:window-width="1916"
-     inkscape:window-height="1113"
-     inkscape:window-x="3840"
+     inkscape:window-height="993"
+     inkscape:window-x="0"
      inkscape:window-y="56"
      inkscape:window-maximized="1"
      inkscape:current-layer="layer1" />
@@ -39,7 +39,7 @@
      inkscape:groupmode="layer"
      id="layer1">
     <path
-       style="fill:#808080;stroke:none;stroke-width:0;stroke-dasharray:none"
+       style="fill:#000000;stroke:none;stroke-width:0;stroke-dasharray:none"
        id="ellipse1"
        sodipodi:type="arc"
        sodipodi:cx="1.3240771"
@@ -53,7 +53,7 @@
        d="M 2.6466287,-2.6460226 A 1.3225516,1.0967745 0 0 1 1.3243215,-1.5492481 1.3225516,1.0967745 0 0 1 0.00152561,-2.6456172"
        transform="scale(1,-1)" />
     <ellipse
-       style="fill:#808080;stroke:#ffffff;stroke-width:0.079375;stroke-dasharray:none"
+       style="fill:#000000;stroke:#ffffff;stroke-width:0.079375;stroke-dasharray:none"
        id="path1"
        cx="1.3261663"
        cy="1.0563247"
