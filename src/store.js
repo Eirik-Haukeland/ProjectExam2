@@ -8,7 +8,11 @@ export const useVenuesStore = createWithEqualityFn((set, get) => ({
     offset: 0,
     lastPage: false,
     venueListErrors: '',
-    clearVenues: () => set(() => ({venues: []})),
+    clearVenues: () => set(() => ({
+        venues: [],
+        offset: 0,
+        lastPage: false
+    })),
     getVenues: async () => {
         try {
             const limit = 12
@@ -201,34 +205,43 @@ export const useNewBooking = createWithEqualityFn((set, get) => ({
     bookingErrors: '',
     createABooking: async () => {
         try {
-            const [dateFrom, dateTo, guests, venueId] = get()
+            const isLoggedIn = useAuthenticationInfromation.getState().isLoggedIn
+            
+            if (!isLoggedIn) {
+                throw new Error("Pleace login to place a booking")
+            }
 
-            const timeStampCheck = RegExp('^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z$')
+            const accessToken = useAuthenticationInfromation.getState().accessToken
+            const {dateFrom, dateTo, guests, venueId} = get()
 
-            if ( !(timeStampCheck.test(dateFrom) || timeStampCheck.test(dateTo)) ) {
+            
+            const timeStampCheck = RegExp(/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}.\d{3}Z$/)
+            
+            if ( !(timeStampCheck.test(dateFrom.toISOString()) || timeStampCheck.test(dateTo.toISOString())) ) {
                 throw new Error('Pleace select the dates you want to stay')
             }
-
-            if ( guests > 0 && guests < useCurrentVenue.getState().maxGuests ) {
+            
+            if ( guests <= 0 || guests > useCurrentVenue.getState().maxGuests ) {
                 throw new Error(`Pleace select an apropiate number of guests. This establishment takes 1 - ${useCurrentVenue.getState().maxGuests} guests)`)
             }
-
-            if ( venueId.length > 0 && typeof venueId === 'string' ) {
+            
+            if ( venueId.length <= 0 || typeof venueId !== 'string' ) {
                 throw new Error('an error occured when trying make a booking. pleace try again')
             }
-
+            
+            console.log(guests, venueId)
             const response = await fetch("https://api.noroff.dev/api/v1/holidaze/bookings", 
                 {
                     method: "POST",
-                    body: {
+                    body: JSON.stringify({
                         dateFrom,
                         dateTo,
                         guests,
                         venueId
-                    },
-                    headers: {
-                        Authorization: `Bearer asdfasdf23asdvah2qw344aab....`
-                    }
+                    }),
+                    headers: new Headers({
+                        'content-type': 'application/json',
+                        'Authorization': `${accessToken}`})
                 })
 
             if (!response.ok) {
@@ -240,6 +253,8 @@ export const useNewBooking = createWithEqualityFn((set, get) => ({
             set(({bookingErrors: error.message }))
         }
 
+
+        useCurrentVenue.updateVenue(venueId)
     },
     setDates: ({dateFrom, dateTo}) => {
         set(({

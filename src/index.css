@@ -64,6 +64,11 @@ button.primary {
   color: white;
 }
 
+button:disabled,
+  button:disabled.primary {
+    background-color: hsl(214 30% 62%);
+  }
+
 @media (prefers-color-scheme: light) {
   :root {
     color: #213547;
@@ -78,5 +83,9 @@ button.primary {
   button.primary {
     background-color: hsl(214 100% 62%);
     color: white;
+  }
+  button:disabled,
+  button:disabled.primary {
+    background-color: hsl(214 50% 62%);
   }
 }
