@@ -253,6 +253,8 @@ export const useNewBooking = createWithEqualityFn((set, get) => ({
             set(({bookingErrors: error.message }))
         }
 
+
+        useCurrentVenue.updateVenue(venueId)
     },
     setDates: ({dateFrom, dateTo}) => {
         set(({
