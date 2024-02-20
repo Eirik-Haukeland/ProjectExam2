@@ -1,24 +1,17 @@
 import { Link } from "react-router-dom"
 import HeaderCss from "./header.module.css"
-import { useAuthenticationInfromation, useVenueCreateStore } from '../../store.js'
+import { useAuthenticationInfromation } from '../../store.js'
 import { shallow } from "zustand/shallow"
 
 export default () => {
 
-    const {openModule, isLoggedIn, logout, venueManager} = useAuthenticationInfromation(status => ({
+    const {openModule, isLoggedIn, logout} = useAuthenticationInfromation(status => ({
         openModule: status.openModule,
         isLoggedIn: status.isLoggedIn,
         logout: status.logout,
-        venueManager: status.venueManager
     }), shallow)
 
-    const {createVenue} = useVenueCreateStore(status => ({
-        createVenue: status.createVenue
-    }), shallow)
-
-    const moduleOpener = (e) => {
-        e.prevetDefault
-
+    const authModuleOpener = (e) => {
         const {target: {innerText: modulePage}} = e
         openModule(modulePage)
     }
@@ -32,13 +25,12 @@ export default () => {
                 {
                     isLoggedIn
                     ?   (<>
-                            { venueManager ? (<Link onClick={createVenue}>create venue</Link>) : (<></>)}
                             <Link to="/profile">profile page</Link>
                             <Link to="/" onClick={logout}>logout</Link>
                         </>)
                     :   (<>
-                            <Link onClick={moduleOpener}>login</Link>
-                            <Link onClick={moduleOpener}>register</Link>
+                            <Link onClick={authModuleOpener}>login</Link>
+                            <Link onClick={authModuleOpener}>register</Link>
                         </>)    
                 }
             </nav>
