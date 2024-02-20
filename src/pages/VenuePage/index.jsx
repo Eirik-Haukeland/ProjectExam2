@@ -71,7 +71,10 @@ export default () => {
                     }}>
                         {
                             
-                            Array(null, maxGuests).map((_, index) => (<option key={index} value={index + 1} default={index === 0}>{index + 1} person</option>))
+                            Array.apply(null, Array(maxGuests)).map((_, index) => {
+                                console.log(maxGuests)
+                                return (<option key={index} value={index + 1} default={index === 0}>{index + 1} person</option>)
+                            })
                         }
                     </select>
                 </div>
