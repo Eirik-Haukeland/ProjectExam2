@@ -452,3 +452,72 @@ export const useAuthenticationInfromation = createWithEqualityFn(persist((set, g
     name: "auth store"
 }
 ))
+
+export const useVenueCreateStore = createWithEqualityFn((set) => ({
+    venueCreationError: '',
+    createVenue: async (data) => {
+        try {
+            const isLoggedIn = useAuthenticationInfromation.getState().isLoggedIn
+            if (!isLoggedIn) {
+                throw new Error("please login before trying to create a venue")
+            }
+            const venueManager = useAuthenticationInfromation.getState().venueManager
+            if (!venueManager) {
+                throw new Error("you must be a venue manager to create a venue")
+            }
+
+            const accessToken = useAuthenticationInfromation.getState().accessToken
+            const body = {
+                name: data.name,
+                description: data.description,
+                media: [...data.media],
+                price: data.price,
+                maxGuests: data.maxGuests,
+                meta: {
+                    wifi: data.wifi || false,
+                    parking: data.parking || false,
+                    breakfast: data.breakfast || false,
+                    pets: data.pets || false
+                }
+            }
+
+            const location = {}
+            if (address) {
+                location["address"] = data.address
+            }
+            if (city) {
+                location["city"] = data.city
+            }
+            if (zip) {
+                location["zip"] = data.zip
+            }
+            if (isCounty(data.country)) {
+                location["country"] = data.country
+            }
+            if (continent) {
+                location["continent"] = data.continent
+            }
+            body[location] = location
+            
+            const response = await fetch('https://api.noroff.dev/api/v1/holidaze/venues', {
+                method: "POST",
+                headers: new Headers({
+                    'content-type': 'application/json',
+                    'Authorization': `${accessToken}`}),
+                body: JSON.stringify(body)
+            })
+
+            const json = await response.json()
+            
+            if (json?.errors) {
+                console.log(json.Errors)
+            }
+            
+            if (!response.ok) {
+                throw new Error("something went wrong when posting a new venue please try again later")
+            }
+        } catch (error) {
+            set(({venueCreationError: error.message}))
+        }
+    }
+}))
