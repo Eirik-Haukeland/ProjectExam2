@@ -1,6 +1,7 @@
 .container{
     display: flex;
     flex-direction: column;
+    margin-top: 2.5rem;
 }
 
 .profileInformation {
@@ -76,55 +77,106 @@
     }
 }
 
-.inputText {
+
+
+.module {
     display: flex;
     flex-direction: column;
-}
+    justify-content: center;
+    padding-inline: 1rem;
+    height: min-content;
 
-.inputCheckbox {
-    display: flex;
-}
+    &:not([open]) {
+        display: none;
+    }
 
-.module > form {
+    & form {
 
-    & .error {
-        color: red;
-    
-        &:not(span) {
-            border: .25rem solid red;
-            padding: .15rem;
-    
-            &:has(+ form input:focus) {
-                display: none;
+        display: grid;
+        grid-template-columns: repeat(2 1fr);
+        column-gap: 1rem;
+        row-gap: .5rem;
+
+        & .message {
+            grid-column: span 2;
+        }
+
+        & .error {
+            color: red;
+        
+            &:not(span) {
+                border: .25rem solid red;
+                padding: .15rem;
+        
+                &:has(+ form input:focus) {
+                    display: none;
+                }
             }
         }
-    }
 
-    display: grid;
-    grid-template: 
-        ". avatar avatar ." min-content
-        ". venueManager venueManager ." min-content
-        ". canselButton updateButton ." min-content
-        / 1rem 1fr 1fr 1rem;
-    
-    column-gap: 1rem;
-    row-gap: .5rem;
+        & .inputText {
+            grid-column: 1;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        & .inputCheckbox {
+            display: flex;
+        }
 
+        & fieldset {
+            grid-column: 2;
+        }
 
-    & .avatarInput {
-        grid-area: avatar;
-    }
+        & fieldset.venueLocation {
+            grid-row: span 2;
+        }
 
-    & .venueManagerInput {
-        grid-area: venueManager;
-        margin-bottom: .5rem;
-    }
+        & fieldset.venueBasicInfo {
+            grid-column: 1;
+            grid-row: span 3;
 
-    & button:first-of-type {
-        grid-area: canselButton;
-    }
+            & .addImages {
+                display: flex;
+                flex-direction: column;
+                gap: .25rem;
+            
+                & .delBtn {
+                    padding-inline: .25rem;
+                    padding-block: .1rem;
+                    background-color: red;
+                    color: white;
+                }
+            
+                & button:not(.delBtn) {
+                    max-width: min-content;
+                    text-wrap: nowrap;
+                    align-self: center;
+                }
+            }
+        }
 
-    & button:last-of-type {
-        grid-area: updateButton;
+        & button:first-of-type {
+            grid-column: 1;
+        }
+
+        & button:last-of-type {
+            grid-column: 2;
+        }
     }
 }
+
+.section {
+    display: grid;
+    grid-template-columns: 50% 50%;
+    width: 100%;
+
+    & > * {
+        width: 100%;
+
+        & h2 {
+            margin: 0;
+        }
+    }
+}
+
