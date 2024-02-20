@@ -8,14 +8,10 @@ export default () => {
     const {openModule, isLoggedIn, logout} = useAuthenticationInfromation(status => ({
         openModule: status.openModule,
         isLoggedIn: status.isLoggedIn,
-        logout: status.logout
+        logout: status.logout,
     }), shallow)
 
-    
-
-    const moduleOpener = (e) => {
-        e.prevetDefault
-
+    const authModuleOpener = (e) => {
         const {target: {innerText: modulePage}} = e
         openModule(modulePage)
     }
@@ -25,18 +21,18 @@ export default () => {
             <Link to="/" className={HeaderCss.logo}>Holidaze</Link>
 
             <nav className={HeaderCss.menu}>
+                <Link to="/">home</Link>
                 {
                     isLoggedIn
                     ?   (<>
-                            <Link to="/" onClick={logout}>logout</Link>
                             <Link to="/profile">profile page</Link>
+                            <Link to="/" onClick={logout}>logout</Link>
                         </>)
                     :   (<>
-                            <Link onClick={moduleOpener}>login</Link>
-                            <Link onClick={moduleOpener}>register</Link>
+                            <Link onClick={authModuleOpener}>login</Link>
+                            <Link onClick={authModuleOpener}>register</Link>
                         </>)    
                 }
-                <Link to="/">home</Link>
             </nav>
         </header>
     )
