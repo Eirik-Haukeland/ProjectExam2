@@ -20,10 +20,6 @@
     align-items: center;
 }
 
-.titleArea > h1 {
-    text-wrap: nowrap;
-}
-
 .titleArea > * {
     margin: 0;
 }
@@ -82,13 +78,13 @@
     grid-area: table;
 }
 
-.infoTable > tr {
+.infoTable  tr {
     display: flex;
     justify-content: space-between;
     padding-inline: .5rem;
 }
 
-.infoTable > tr:nth-child(odd) {
+.infoTable  tr:nth-child(odd) {
     background-color: hsla(0, 0%, 0%, 10%);
 }
 
