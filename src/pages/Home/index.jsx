@@ -19,6 +19,7 @@ export default () => {
     useEffect(() => {
         clearVenues()
         getVenues()
+        document.title = 'Holidaze'
     }, [])
 
     return (

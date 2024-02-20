@@ -1,6 +1,6 @@
 import { shallow } from "zustand/shallow"
 import { useForm } from 'react-hook-form'
-import { useRef } from 'react'
+import { useEffect, useRef } from 'react'
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup'
 
@@ -38,6 +38,8 @@ export default () => {
     } = useForm ({
         resolver: yupResolver(schema)
     })
+
+    useEffect(() => document.title = 'Holidaze - Profile page', [])
 
     return (
         <>

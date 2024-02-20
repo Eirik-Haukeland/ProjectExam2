@@ -42,6 +42,12 @@ export default () => {
         }),
         shallow
     )
+    
+    useEffect(() => document.title = `Holidaze - venue: ${name}`, [])
+
+    useEffect(() => {
+        console.log(hasWifi, hasParking, servesBreakfast, allowsPets)
+    }, [hasWifi, hasParking, servesBreakfast, allowsPets])
 
     useEffect(() => {
         clearBooking()
