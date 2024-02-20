@@ -8,7 +8,11 @@ export const useVenuesStore = createWithEqualityFn((set, get) => ({
     offset: 0,
     lastPage: false,
     venueListErrors: '',
-    clearVenues: () => set(() => ({venues: []})),
+    clearVenues: () => set(() => ({
+        venues: [],
+        offset: 0,
+        lastPage: false
+    })),
     getVenues: async () => {
         try {
             const limit = 12
@@ -201,11 +205,20 @@ export const useNewBooking = createWithEqualityFn((set, get) => ({
     bookingErrors: '',
     createABooking: async () => {
         try {
-            const [dateFrom, dateTo, guests, venueId] = get()
+            const isLoggedIn = useAuthenticationInfromation.getState().isLoggedIn
+            
+            if (!isLoggedIn) {
+                throw new Error("Pleace login to place a booking")
+            }
 
-            const timeStampCheck = RegExp('^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z$')
+            const accessToken = useAuthenticationInfromation.getState().accessToken
+            const {dateFrom, dateTo, guests, venueId} = get()
 
-            if ( !(timeStampCheck.test(dateFrom) || timeStampCheck.test(dateTo)) ) {
+            
+            const timeStampCheck = RegExp('^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}.\d{3}Z$')
+            
+            if ( !(timeStampCheck.test(dateFrom.toISOString()) || timeStampCheck.test(dateTo.toISOString())) ) {
+                console.log(dateFrom.toISOString(), dateTo.toISOString(), guests, venueId)
                 throw new Error('Pleace select the dates you want to stay')
             }
 
@@ -226,9 +239,9 @@ export const useNewBooking = createWithEqualityFn((set, get) => ({
                         guests,
                         venueId
                     },
-                    headers: {
-                        Authorization: `Bearer asdfasdf23asdvah2qw344aab....`
-                    }
+                    headers: new Headers({
+                        'content-type': 'application/json',
+                        'Authorization': `${accessToken}`})
                 })
 
             if (!response.ok) {
