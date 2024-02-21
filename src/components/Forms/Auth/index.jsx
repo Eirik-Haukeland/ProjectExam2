@@ -1,5 +1,5 @@
 import { shallow } from "zustand/shallow"
-import { useAuthenticationInfromation } from '../../store.js'
+import { useAuthenticationInfromation } from '../../../store.js'
 import { useEffect, useRef } from 'react'
 import { useForm } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup';
