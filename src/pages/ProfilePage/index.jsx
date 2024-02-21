@@ -65,7 +65,6 @@ export default () => {
     const {createVenue, venueCreationError } = useVenueCreateStore(state => ({
         createVenue: state.createVenue,
         venueCreationError: state.venueCreationError,
-
     }), shallow)
 
     const {

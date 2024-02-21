@@ -11,8 +11,6 @@
     gap: 1rem;
     
     & .profilePicture{
-        position: relative;
-
         & > img {
             border: .1rem solid black;
             border-radius: 100%;
@@ -21,12 +19,6 @@
             width: 5rem;
 
             object-fit: cover;
-        }
-
-        & .changeTool {
-            position: absolute;
-            right: .25rem;
-            bottom: .25rem;
         }
     }
     
@@ -216,6 +208,7 @@
         display: grid;
         grid-template-columns: auto min-content;
         row-gap: .5rem;
+        column-gap: .25rem;
 
         & h3 {
             margin: 0;
@@ -229,9 +222,13 @@
         }
         
         & .cardRating, .cardDates {
-            height: 1em;
             grid-column: 1;
             align-self: start;       
+        }
+
+        & .cardRating {
+            height: 1em;
+            grid-column: span 2;
         }
 
         & button {
@@ -253,7 +250,35 @@
                 color: white;
             }
         }
+    }    
+}
+
+@media screen and (max-width: 670px) {
+    .profileInformation {
+        flex-direction: column;
+        position: relative;
+        align-items: center;
+
+        & .profilePicture > img {
+            height: 10rem;
+            width: 10rem;
+        }
     }
+
+    .changeTool {
+        position: absolute;
+        top: 0;
+        right: 0;
+    }
+
+    .section {
+        display: grid;
+        grid-template-columns: 100%;
+        width: 100%;
+        gap: 2rem;
         
-    
+        & section {
+            grid-template-rows: initial;
+        }
+    }
 }
