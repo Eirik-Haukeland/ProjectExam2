@@ -58,9 +58,10 @@ export const useCurrentVenue = createWithEqualityFn((set, get) => ({
     continent: "",
     bookings: [],
     fetchErrors: '',
+    ownerName: '',
     updateVenue: async (id) => {
         try {
-            const response = await fetch(`https://api.noroff.dev/api/v1/holidaze/venues/${id}?_bookings=true`)
+            const response = await fetch(`https://api.noroff.dev/api/v1/holidaze/venues/${id}?_bookings=true&_owner=true`)
             const json =  await response.json()
 
             if (!response.ok) {
@@ -86,7 +87,8 @@ export const useCurrentVenue = createWithEqualityFn((set, get) => ({
                 zip: newZip,
                 country: newCountry,
                 continent: newContinent,
-                bookings: newBookings } = json
+                bookings: newBookings,
+                owner: {name: newOwnerName} } = json
             const { 
                 id: oldId,
                 name: oldName,
@@ -106,7 +108,8 @@ export const useCurrentVenue = createWithEqualityFn((set, get) => ({
                 zip: oldZip,
                 country: oldCountry,
                 continent: oldContinent,
-                bookings: oldBookings } = get()
+                bookings: oldBookings,
+                ownerName: oldOwnerName } = get()
                 
             if (newId !== oldId && typeof newId === "string") { 
                 set(({ id: newId }))
@@ -162,6 +165,9 @@ export const useCurrentVenue = createWithEqualityFn((set, get) => ({
             if (newZip !== oldZip && typeof newZip === "string") { 
                 set(({ zip: newZip }))
             }
+            if (newOwnerName !== oldOwnerName && typeof newOwnerName === "string") { 
+                set(({ ownerName: newOwnerName }))
+            }
             if (newBookings !== oldBookings && Array.isArray(newBookings)) { 
 
                 const bookingsToSet = newBookings.reduce((newList, booking) => {
@@ -212,11 +218,14 @@ export const useNewBooking = createWithEqualityFn((set, get) => ({
 
             const accessToken = useAuthenticationInfromation.getState().accessToken
             const {dateFrom, dateTo, guests, venueId} = get()
+            
+            // ensure that booking last to end of day
+            const editedDateTo = new Date(`${dateTo.toISOString().split('T')[0]}T23:59:59:000Z`)
 
             
             const timeStampCheck = RegExp(/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}.\d{3}Z$/)
             
-            if ( !(timeStampCheck.test(dateFrom.toISOString()) || timeStampCheck.test(dateTo.toISOString())) ) {
+            if ( !(timeStampCheck.test(dateFrom.toISOString()) || timeStampCheck.test(editedDateTo.toISOString())) ) {
                 throw new Error('Pleace select the dates you want to stay')
             }
             
@@ -228,13 +237,12 @@ export const useNewBooking = createWithEqualityFn((set, get) => ({
                 throw new Error('an error occured when trying make a booking. pleace try again')
             }
             
-            console.log(guests, venueId)
             const response = await fetch("https://api.noroff.dev/api/v1/holidaze/bookings", 
                 {
                     method: "POST",
                     body: JSON.stringify({
                         dateFrom,
-                        dateTo,
+                        dateTo: editedDateTo,
                         guests,
                         venueId
                     }),
@@ -248,12 +256,10 @@ export const useNewBooking = createWithEqualityFn((set, get) => ({
             }
 
             console.warn("you are not done here: store.js: useNewBooking.createABooking")
+            useCurrentVenue.updateVenue(venueId)
         } catch (error) {
             set(({bookingErrors: error.message }))
         }
-
-
-        useCurrentVenue.updateVenue(venueId)
     },
     setDates: ({dateFrom, dateTo}) => {
         set(({
@@ -303,6 +309,8 @@ export const useAuthenticationInfromation = createWithEqualityFn(persist((set, g
     isLoggedIn: false,
     isModuleOpen: false,
     modulePageOpen: 'register',
+    bookings: [],
+    venues: [],
     clearErrors: () => set(({formError: ''})), 
     openModule: (modulepage) => {
         set(({
@@ -369,6 +377,7 @@ export const useAuthenticationInfromation = createWithEqualityFn(persist((set, g
                 accessToken: `Bearer ${json.accessToken}`,
                 isLoggedIn: true
             }))
+            get().closeModule()
         } catch (error) {
             console.log(error)
             set(({
@@ -390,8 +399,6 @@ export const useAuthenticationInfromation = createWithEqualityFn(persist((set, g
             if (!get().accessToken.length > 0) {
                 throw new Error('user is not logged in')
             }
-
-            console.log(data, onSuccess)
             const errors = []
             const setItems = {};
 
@@ -445,9 +452,44 @@ export const useAuthenticationInfromation = createWithEqualityFn(persist((set, g
 
             set(({formError: error.message}))
         }
+    },
+    refreshUserData: async () => {
+        try {
+            const userName = get().name
+
+            const response = await fetch(`https://api.noroff.dev/api/v1/holidaze/profiles/${userName}?_venues=true&_bookings=true`, {
+                method: "GET",
+                headers: new Headers({'Authorization': `${get().accessToken}`}),
+            })
+            const json = await response.json()
+
+            if (!response.ok) {
+                throw new Error("something went wrong when posting a new venue please try again later")
+            }
+
+            console.log(response, json)
+
+            set(json)
+        } catch (error) {
+            console.error(error.message)
+        }
     }
 }), {
-    name: "auth store"
+    name: "auth store",
+    partialize: (state) => ({
+        id: state.id,
+        name: state.name,
+        email: state.email,
+        avatar: state.avatar,
+        venueManager: state.venueManager,
+        accessToken: state.accessToken,
+        formError: state.formError,
+        isLoggedIn: state.isLoggedIn,
+        isModuleOpen: state.isModuleOpen,
+        modulePageOpen: state.modulePageOpen,
+        bookings: state.bookings,
+        venues: state.venues
+    })
 }
 ))
 

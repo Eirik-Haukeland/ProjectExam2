@@ -1,13 +1,17 @@
 import { shallow } from "zustand/shallow"
 import { useFieldArray, useForm } from 'react-hook-form'
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useRef } from 'react'
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup'
+import { Link } from "react-router-dom"
 
 import cssProfilePage from "./profilePage.module.css"
+
 import { useAuthenticationInfromation, useVenueCreateStore } from "../../store.js"
 import noProfile from "../../assets/no_profile.svg"
 import wrench from "../../assets/wrench.svg"
+import Rating from "../../components/Rating/index.jsx"
+import ImgCarusel from "../../components/imgCarusel/index.jsx";
 
 const profileSchema = yup
     .object({
@@ -24,7 +28,7 @@ const venueSchema = yup
         description: yup.string().required('Please give this venue a description'),
         media: yup.array(yup.string().url('must be a valid url')),
         price: yup.number().min(1).required('Please tell us how mutch you want to charge'),
-        maxGuests: yup.number().min(1).required('Please tell us how many guests you can have at a time'),
+        maxGuests: yup.number().min(1, "a venue must at least have room for one guest").max(100, 'a venue can not have more than 100 guests').required('Please tell us how many guests you can have at a time'),
         meta: yup.object({
             wifi: yup.boolean(),
             parking: yup.boolean(),
@@ -46,18 +50,22 @@ export default () => {
     const ProfileModuleRef = useRef(null)
     const venueModuleRef = useRef(null)
         
-    const { avatar, name, email, venueManager, changeProfile, formError } = useAuthenticationInfromation((state) => ({
+    const { avatar, name, email, venueManager, changeProfile, formError, refreshUserData, venues, bookings } = useAuthenticationInfromation((state) => ({
         avatar: state.avatar,
         name: state.name,
         email: state.email,
         venueManager: state.venueManager,
         changeProfile: state.changeProfile,
-        formError: state.formError
+        formError: state.formError,
+        refreshUserData: state.refreshUserData,
+        venues: state.venues,
+        bookings: state.bookings
     }), shallow)
 
-    const {createVenue, venueCreationError} = useVenueCreateStore(status => ({
-        createVenue: status.createVenue,
-        venueCreationError: status.venueCreationError
+    const {createVenue, venueCreationError } = useVenueCreateStore(state => ({
+        createVenue: state.createVenue,
+        venueCreationError: state.venueCreationError,
+
     }), shallow)
 
     const {
@@ -82,7 +90,8 @@ export default () => {
     })
 
     useEffect(() => {
-        document.title = 'Holidaze - Profile page'
+        document.title = 'Holidaze - Profile page';
+        refreshUserData()
     }, [])
 
     return (
@@ -139,28 +148,52 @@ export default () => {
                 </dialog>
             </section>
             
-            <div className={cssProfilePage.section}>
+            <div className={cssProfilePage.section} style={{"--numberOfRows": `${(bookings.length > venues.length ? bookings.length : venues.length) + 1}`}}>
                 <section>
                     <h2>Your bookings</h2>
-                    <div>
-                        <span>vanue name</span>
-                        <span>datefrom</span>
-                        <span>dateTo</span>
-                        <span>price</span>
-                    </div>
+                    {
+                        bookings.map(booking => {
+                            const {id, guests, dateFrom, dateTo, venue: {media: images, name: venueName, price: basePrice}} = booking
+                            const price = basePrice * guests
+                            const displayDateFrom = new Date(dateFrom).toDateString().split(' ').slice(1).join(' ')
+                            const displayDateTo = new Date(dateTo).toDateString().split(' ').slice(1).join(' ')
+
+                            return (
+                            <div key={id} className={cssProfilePage.card}>
+                                <ImgCarusel images={images} classNames={cssProfilePage.cardImg}/>
+                                <div>
+                                    <h3>{venueName}</h3>
+                                    <span>price per day: ${price}</span>
+                                    <span className={cssProfilePage.cardDates} >From: {displayDateFrom}, To: {displayDateTo}</span>
+                                </div>
+                            </div>
+                        )}
+                        )
+                    }
                 </section>
                 { venueManager ? (
                 <section>
-                    <div style={{display: "flex", justifyContent: "space-between"}}>
+                    <div className={cssProfilePage.venueListTitle} style={{display: "flex", justifyContent: "space-between"}}>
                         <h2>Your venues</h2>
-                        <button onClick={() => venueModuleRef.current?.showModal()}>create venue</button>
+                        <button  className={`primary ${cssProfilePage.venueListTitle_button}`} onClick={() => venueModuleRef.current?.showModal()}>create venue</button>
                     </div>
-                    <div>
-                        <span>vanue name</span>
-                        <span>datefrom</span>
-                        <span>dateTo</span>
-                        <span>price</span>
-                    </div>
+                    {
+                        venues.map(venue => (
+                            <Link key={venue.id} to={`/venue/${venue.id}`} className={cssProfilePage.card}>
+                                <ImgCarusel images={venue.media} classNames={cssProfilePage.cardImg}/>
+                                <div>
+                                    <h3>{venue.name}</h3>
+                                    <span>price per day: ${venue.price}</span>
+                                    <Rating givenRating={venue.rating} className={cssProfilePage.cardRating} />
+                                    <button>edit</button>
+                                    <button className={cssProfilePage.delBtn}>delete</button>
+                                </div>
+                            </Link>
+                        )
+                        )
+                    }
+                    
+                   
                     <dialog ref={venueModuleRef} className={cssProfilePage.module}>
                         <h2>create venue</h2>
                         <span className={cssProfilePage.error}>{venueCreationError}</span>

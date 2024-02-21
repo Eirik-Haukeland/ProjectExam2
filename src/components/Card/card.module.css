@@ -48,6 +48,7 @@
     overflow: hidden;
 }
 
-.rating {
+.rating:last-child {
     grid-area: rating;
+    height: 1rem;
 }
