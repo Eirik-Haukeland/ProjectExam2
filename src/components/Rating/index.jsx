@@ -3,9 +3,9 @@ import starEmpty from "../../assets/star_empty.svg"
 import { useCurrentVenue } from "../../store"
 import cssRating from "./rating.module.css"
 
-export default function Rating({className}) {
+export default function Rating({className, givenRating}) {
 
-    const rating = useCurrentVenue(state => state.rating)
+    const rating = givenRating ? givenRating : useCurrentVenue(state => state.rating)
 
     return (
         <div aria-label={`${rating} of 5 stars`} className={`${className} ${cssRating.starContainer}`}>
