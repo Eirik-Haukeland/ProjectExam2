@@ -115,7 +115,7 @@
         }
 
         & .inputText {
-            grid-column: 1;
+            grid-column: span 2;
             display: flex;
             flex-direction: column;
         }
@@ -167,16 +167,93 @@
 }
 
 .section {
+    --numberOfRows: 1;
     display: grid;
     grid-template-columns: 50% 50%;
     width: 100%;
+    gap: 2rem;
+    
+    & section {
+        grid-row: span var(--numberOfRows);
 
-    & > * {
-        width: 100%;
+        display: grid;
+        grid-template-rows: subgrid;
+        gap: .75rem;
 
         & h2 {
+            padding: 0;
             margin: 0;
+            height: 3rem;
+        }
+
+        & .venueListTitle_button {
+            height: min-content; 
+            align-self: baseline;
         }
     }
 }
 
+.card {
+    display: flex;
+    gap: .75rem;
+    background-color: hsl(0, 0%, 90%);
+    padding: .5rem;
+    border-radius: 1rem;
+
+    &:is(:hover, :focus, :focus-visible) {
+        background-color: hsl(0, 0%, 8  0%);
+    }
+
+    & .cardImg {
+        height: 7rem;
+        width: 7rem;
+        border-radius: .75rem;
+    }
+
+    & > div {
+        flex-grow: 2;
+
+        display: grid;
+        grid-template-columns: auto min-content;
+        row-gap: .5rem;
+
+        & h3 {
+            margin: 0;
+            grid-column: 1;
+        }
+
+        & span {
+            grid-column: 1;
+            align-self: end;
+            color: black;
+        }
+        
+        & .cardRating, .cardDates {
+            height: 1em;
+            grid-column: 1;
+            align-self: start;       
+        }
+
+        & button {
+            grid-column: 2;
+            padding-inline: .25rem;
+            padding-block: .1rem;
+            height: min-content;
+
+            &:first-of-type {
+                grid-row: 1;
+            }
+
+            &:last-of-type {
+                grid-row: 2;
+            }
+
+            &.delBtn {
+                background-color: red;
+                color: white;
+            }
+        }
+    }
+        
+    
+}
