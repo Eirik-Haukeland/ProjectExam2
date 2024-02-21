@@ -58,9 +58,10 @@ export const useCurrentVenue = createWithEqualityFn((set, get) => ({
     continent: "",
     bookings: [],
     fetchErrors: '',
+    ownerName: '',
     updateVenue: async (id) => {
         try {
-            const response = await fetch(`https://api.noroff.dev/api/v1/holidaze/venues/${id}?_bookings=true`)
+            const response = await fetch(`https://api.noroff.dev/api/v1/holidaze/venues/${id}?_bookings=true&_owner=true`)
             const json =  await response.json()
 
             if (!response.ok) {
@@ -86,7 +87,8 @@ export const useCurrentVenue = createWithEqualityFn((set, get) => ({
                 zip: newZip,
                 country: newCountry,
                 continent: newContinent,
-                bookings: newBookings } = json
+                bookings: newBookings,
+                owner: {name: newOwnerName} } = json
             const { 
                 id: oldId,
                 name: oldName,
@@ -106,7 +108,8 @@ export const useCurrentVenue = createWithEqualityFn((set, get) => ({
                 zip: oldZip,
                 country: oldCountry,
                 continent: oldContinent,
-                bookings: oldBookings } = get()
+                bookings: oldBookings,
+                ownerName: oldOwnerName } = get()
                 
             if (newId !== oldId && typeof newId === "string") { 
                 set(({ id: newId }))
@@ -161,6 +164,9 @@ export const useCurrentVenue = createWithEqualityFn((set, get) => ({
             }
             if (newZip !== oldZip && typeof newZip === "string") { 
                 set(({ zip: newZip }))
+            }
+            if (newOwnerName !== oldOwnerName && typeof newOwnerName === "string") { 
+                set(({ ownerName: newOwnerName }))
             }
             if (newBookings !== oldBookings && Array.isArray(newBookings)) { 
 
@@ -303,6 +309,8 @@ export const useAuthenticationInfromation = createWithEqualityFn(persist((set, g
     isLoggedIn: false,
     isModuleOpen: false,
     modulePageOpen: 'register',
+    userBookings: [],
+    userVenues: [],
     clearErrors: () => set(({formError: ''})), 
     openModule: (modulepage) => {
         set(({
@@ -369,6 +377,7 @@ export const useAuthenticationInfromation = createWithEqualityFn(persist((set, g
                 accessToken: `Bearer ${json.accessToken}`,
                 isLoggedIn: true
             }))
+            get().closeModule()
         } catch (error) {
             console.log(error)
             set(({
@@ -390,8 +399,6 @@ export const useAuthenticationInfromation = createWithEqualityFn(persist((set, g
             if (!get().accessToken.length > 0) {
                 throw new Error('user is not logged in')
             }
-
-            console.log(data, onSuccess)
             const errors = []
             const setItems = {};
 
@@ -445,9 +452,35 @@ export const useAuthenticationInfromation = createWithEqualityFn(persist((set, g
 
             set(({formError: error.message}))
         }
+    },
+    refreshUserData: async () => {
+        try {
+            const userName = get().name
+
+            const response = await fetch(`https://api.noroff.dev/api/v1/holidaze/profiles/${userName}?_venues=true&_bookings=true`)
+            const json = await response.json()
+
+            console.log(response, json)
+        } catch (error) {
+            console.error(error.message)
+        }
     }
 }), {
-    name: "auth store"
+    name: "auth store",
+    partialize: (state) => ({
+        id: state.id,
+        name: state.name,
+        email: state.email,
+        avatar: state.avatar,
+        venueManager: state.venueManager,
+        accessToken: state.accessToken,
+        formError: state.formError,
+        isLoggedIn: state.isLoggedIn,
+        isModuleOpen: state.isModuleOpen,
+        modulePageOpen: state.modulePageOpen,
+        userBookings: state.userBookings,
+        userVenues: state.userVenues
+    })
 }
 ))
 
