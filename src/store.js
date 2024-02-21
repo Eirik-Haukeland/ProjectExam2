@@ -59,11 +59,22 @@ export const useCurrentVenue = createWithEqualityFn((set, get) => ({
     bookings: [],
     fetchErrors: '',
     ownerName: '',
-    updateVenue: async (id) => {
+    venueNotFound: false,
+    loadVenue: async (id) => {
         try {
+            set({
+                venueNotFound: false,
+                fetchErrors: ''
+            })
+
             const response = await fetch(`https://api.noroff.dev/api/v1/holidaze/venues/${id}?_bookings=true&_owner=true`)
             const json =  await response.json()
 
+            console.log(response)
+            
+            if (response.status === 404) {
+                throw new Error('venue not found')    
+            }
             if (!response.ok) {
                 throw new Error('problem occured when trying to get venues. plese try again later')
             }
@@ -195,7 +206,15 @@ export const useCurrentVenue = createWithEqualityFn((set, get) => ({
             }
            
         } catch (error) {
-            set('an error occured when trying to get the venue. pleace try again')
+            if (error.message === 'venue not found') {
+                set(({
+                    fetchErrors: error.message,
+                    venueNotFound: true
+                }))
+
+            }
+
+            set({fetchErrors: 'an error occured when trying to get the venue. pleace try again'})
         }
         
     }
@@ -255,7 +274,6 @@ export const useNewBooking = createWithEqualityFn((set, get) => ({
                 throw new Error ('an error occured when trying make a booking. pleace try again')
             }
 
-            console.warn("you are not done here: store.js: useNewBooking.createABooking")
             useCurrentVenue.updateVenue(venueId)
         } catch (error) {
             set(({bookingErrors: error.message }))
@@ -379,7 +397,6 @@ export const useAuthenticationInfromation = createWithEqualityFn(persist((set, g
             }))
             get().closeModule()
         } catch (error) {
-            console.log(error)
             set(({
                 formError: error.message
             }))
@@ -401,9 +418,10 @@ export const useAuthenticationInfromation = createWithEqualityFn(persist((set, g
             }
             const errors = []
             const setItems = {};
+            const name = get().name
 
             if (data.venueManager !== get().venueManager) {
-                const response = await fetch('https://api.noroff.dev/api/v1/holidaze/profiles/test_ebh', {
+                const response = await fetch(`https://api.noroff.dev/api/v1/holidaze/profiles/${name}`, {
                     method: "PUT",
                     headers: new Headers({
                         'content-type': 'application/json',
@@ -420,7 +438,7 @@ export const useAuthenticationInfromation = createWithEqualityFn(persist((set, g
             }
 
             if (data.avatar !== (get().avatar || '') || data.removeAvatar){
-                const response = await fetch('https://api.noroff.dev/api/v1/holidaze/profiles/test_ebh/media', {
+                const response = await fetch(`https://api.noroff.dev/api/v1/holidaze/profiles/${name}/media`, {
                     method: "PUT",
                     headers: new Headers({
                         'content-type': 'application/json',
@@ -467,8 +485,6 @@ export const useAuthenticationInfromation = createWithEqualityFn(persist((set, g
                 throw new Error("something went wrong when posting a new venue please try again later")
             }
 
-            console.log(response, json)
-
             set(json)
         } catch (error) {
             console.error(error.message)
@@ -495,8 +511,38 @@ export const useAuthenticationInfromation = createWithEqualityFn(persist((set, g
 
 export const useVenueCreateStore = createWithEqualityFn((set) => ({
     venueCreationError: '',
-    createVenue: async (body, onSuccess) => {
+    deleteVenue: async (id, onError) => {
         try {
+
+            //throw new Error('test error')
+
+            const accessToken = useAuthenticationInfromation.getState().accessToken
+            const response = await fetch(`https://api.noroff.dev/api/v1/holidaze/venues/${id}`, 
+                {
+                    method: "DELETE",
+                    headers: new Headers({'Authorization': `${accessToken}`})
+                })
+
+            if (response.status !== 204) {
+                throw new Error('something went wrong, please try again later')
+            }
+
+            useAuthenticationInfromation.getState().refreshUserData()
+        } catch (error) {
+            if (error.message === 'Failed to fetch' || error.message === 'accessToken is not defined') {
+                onError('something went wrong. check if you are online or try again later')
+                return
+            }
+
+            console.log(error.message)
+            onError(error.message)
+        }
+    },
+    createVenue: async (body, fetchInfo, onSuccess) => {
+        try {
+
+            console.log(body)
+
             const isLoggedIn = useAuthenticationInfromation.getState().isLoggedIn
             if (!isLoggedIn) {
                 throw new Error("please login before trying to create a venue")
@@ -507,8 +553,8 @@ export const useVenueCreateStore = createWithEqualityFn((set) => ({
             }
 
             const accessToken = useAuthenticationInfromation.getState().accessToken
-            const response = await fetch('https://api.noroff.dev/api/v1/holidaze/venues', {
-                method: "POST",
+            const response = await fetch(`https://api.noroff.dev/api/v1/holidaze/venues${fetchInfo.url}`, {
+                method: fetchInfo.method,
                 headers: new Headers({
                     'content-type': 'application/json',
                     'Authorization': `${accessToken}`}),
