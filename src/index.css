@@ -89,3 +89,8 @@ button:disabled,
     background-color: hsl(214 50% 62%);
   }
 }
+
+.notFoundImg {
+  width: 100%;
+  height: auto;
+}

@@ -6,10 +6,11 @@ import ImgCarusel from "../../components/imgCarusel/index.jsx"
 import cssVenuePage from "./venuePage.module.css"
 import Calendar from "../../components/Calendar/index.jsx"
 import Rating from "../../components/Rating/index.jsx"
+import noPageImg from "../../assets/404_error_img.jpeg"
 
 export default () => {
     const { venueId } = useParams()
-    const { name, description, media, price, maxGuests, hasWifi, hasParking, servesBreakfast, allowsPets, address, updateVenue } = useCurrentVenue(
+    const { name, description, media, price, maxGuests, hasWifi, hasParking, servesBreakfast, allowsPets, address, loadVenue, venueNotFound, fetchError } = useCurrentVenue(
         (state) => ({
             name: state.name,
             description: state.description,
@@ -21,7 +22,9 @@ export default () => {
             servesBreakfast: state.servesBreakfast,
             allowsPets: state.allowsPets,
             address: state.address,
-            updateVenue: state.updateVenue,
+            loadVenue: state.loadVenue,
+            venueNotFound: state.venueNotFound,
+            fetchError: state.fetchError
         }),
         shallow
     )
@@ -43,7 +46,7 @@ export default () => {
         shallow
     )
     
-    useEffect(() => document.title = `Holidaze - venue: ${name}`, [])
+    useEffect(() => {document.title = `Holidaze - venue: ${name}`}, [])
 
     useEffect(() => {
         console.log(hasWifi, hasParking, servesBreakfast, allowsPets)
@@ -51,7 +54,7 @@ export default () => {
 
     useEffect(() => {
         clearBooking()
-        updateVenue(venueId)
+        loadVenue(venueId)
         setVenueIdForBooking(venueId)
     }, [ venueId ])
 
@@ -60,7 +63,9 @@ export default () => {
         setTotalPrice( price * numberOfGuests * numberOfDates )
     }, [ price, numberOfGuests, numberOfDates ])
 
-    return (
+    return venueNotFound 
+    ? (<img className="notFoundImg" src={noPageImg} alt={fetchError} />) 
+    : (
         <section className={cssVenuePage.container}>
             <div className={cssVenuePage.titleArea}>
                 <h1>{name}</h1>
