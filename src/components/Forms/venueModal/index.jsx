@@ -52,17 +52,17 @@ export default ({venue, id}) => {
             price: venue?.price || 1,
             maxGuests: venue?.maxGuests || 1,
             meta: {
-                wifi: venue?.wifi || false,
-                parking: venue?.parking || false,
-                breakfast: venue?.breakfast || false,
-                pets: venue?.pets || false
+                wifi: venue?.meta.wifi || false,
+                parking: venue?.meta.parking || false,
+                breakfast: venue?.meta.breakfast || false,
+                pets: venue?.meta.pets || false
             },
             location: {
-                address: venue?.address || '',
-                city: venue?.city || '',
-                zip: venue?.zip || '',
-                country: venue?.country || '',
-                continent: venue?.continent || ''
+                address: venue?.location.address || '',
+                city: venue?.location.city || '',
+                zip: venue?.location.zip || '',
+                country: venue?.location.country || '',
+                continent: venue?.location.continent || ''
             }
         }
     })
