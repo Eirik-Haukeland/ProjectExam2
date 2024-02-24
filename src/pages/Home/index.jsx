@@ -18,13 +18,14 @@ const loginSchema = yup
 .required()
 
 export default () => {
-    const {displayVenues, lastPage, getVenues, moreVenues, searchForVenues, searchError} = useVenuesStore((state) => ({
+    const {displayVenues, lastPage, getVenues, moreVenues, searchForVenues, searchError, searchText} = useVenuesStore((state) => ({
         displayVenues: state.displayVenues,
         lastPage: state.lastPage,
         getVenues: state.getVenues,
         moreVenues: state.moreVenues,
         searchForVenues: state.searchForVenues,
-        searchError: state.searchError
+        searchError: state.searchError,
+        searchText: state.searchText
         }),
         shallow
     );
@@ -48,7 +49,7 @@ export default () => {
         <>  
             <form className={homeCss.search} onSubmit={handleSubmit(searchForVenues)}>
                 <label className={homeCss.searchLabel} htmlFor="searchBox" hidden>Search by Name</label>
-                <input className={homeCss.searchInput} type="search" id="searchBox" {...register('searchString')} />
+                <input className={homeCss.searchInput} defaultValue={searchText} type="search" id="searchBox" {...register('searchString')} />
                 <span className={homeCss.searchError}>{errors.searchString?.message}{searchError ? `\n${searchError}` : ''}</span>
                 <input className={homeCss.searchSubmit} type="submit" value="search" />
             </form>

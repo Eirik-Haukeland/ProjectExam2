@@ -6,6 +6,7 @@ export const useVenuesStore = createWithEqualityFn((set, get) => ({
     allVenues: [],
     searchVenues: [],
     searchError: '',
+    searchText: '',
     displayVenues: [],
     offset: 0,
     limit: 12,
@@ -20,7 +21,6 @@ export const useVenuesStore = createWithEqualityFn((set, get) => ({
         const moreVenues = get().moreVenues
         try {
             if (get().allVenues.length > 0) {
-                moreVenues()
                 return
             }
 
@@ -76,6 +76,7 @@ export const useVenuesStore = createWithEqualityFn((set, get) => ({
         const searchError = searchResult.length >= 1 || searchString.length < 1 ? '' : 'there is no venue matching search'
         
         set({
+            searchText: searchString,
             searchVenues: searchResult,
             displayVenues: [],
             searchError: searchError,
