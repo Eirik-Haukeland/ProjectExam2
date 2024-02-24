@@ -17,8 +17,10 @@ export const useVenuesStore = createWithEqualityFn((set, get) => ({
         lastPage: false
     }),
     getVenues: async () => {
+        const moreVenues = get().moreVenues
         try {
             if (get().allVenues.length > 0) {
+                moreVenues()
                 return
             }
 
@@ -35,7 +37,7 @@ export const useVenuesStore = createWithEqualityFn((set, get) => ({
                 offset: 0
             })
             
-            const moreVenues = get().moreVenues
+
             moreVenues()
         } catch (error) {
             set(({venueListErrors: 'an error occured when trying to get venues. pleace try again'}))
