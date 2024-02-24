@@ -146,7 +146,6 @@
 
         & > div {
             grid-row: span 3;
-
             display: grid;
             grid-template-rows: subgrid;
     
@@ -170,24 +169,22 @@
         }
     }    
         
-    & button {
+    & .buttonDiv {
         grid-column: 3;
-        padding-inline: .25rem;
-        padding-block: .1rem;
-        height: min-content;
-
-        &:first-of-type {
-            grid-row: 1;
+        grid-row: span 3;
+        display: grid;
+        
+        & button {
+            padding-inline: .25rem;
+            padding-block: .1rem;
+            height: min-content;
+        
+            &.delBtn {
+                background-color: red;
+                color: white;
+            }
         }
 
-        &:last-of-type {
-            grid-row: 2;
-        }
-
-        &.delBtn {
-            background-color: red;
-            color: white;
-        }
     }
 }
 

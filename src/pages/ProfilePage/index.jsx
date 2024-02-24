@@ -73,7 +73,39 @@ export default () => {
             </section>
             
             <div className={cssProfilePage.section} style={{"--numberOfRows": `${(bookings.length > venues.length ? bookings.length : venues.length) + 1}`}}>
-                <section>
+                { venueManager 
+                    ? (<section>
+                            <div className={cssProfilePage.venueListTitle} style={{display: "flex", justifyContent: "space-between"}}>
+                                <h2>Your venues</h2>
+                                <button  className={`primary ${cssProfilePage.venueListTitle_button}`} onClick={() => document.getElementById(venueModuleRef).showModal()}>create venue</button>
+                            </div>
+                            {venues.map(venue => {
+                                const errorMessage = venueCardError[venue.id]
+                                const venueCardModuleId = `venueModuleCard${venue.id}`
+                            
+                                return (
+                                    <div key={venue.id} className={cssProfilePage.card}>
+                                        <span className={`${cssProfilePage.error} ${errorMessage ? cssProfilePage.hasError : ''}`}>{errorMessage}</span>
+                                        <Link to={`/venue/${venue.id}`} className={cssProfilePage.innerCard}>
+                                            <ImgCarusel images={venue.media} classNames={cssProfilePage.cardImg}/>
+                                            <div>
+                                                <h3>{venue.name}</h3>
+                                                <span>price per day: ${venue.price}</span>
+                                                <Rating givenRating={venue.rating} className={cssProfilePage.cardRating} />
+                                            </div>
+                                        </Link>
+                                        <VenueModal id={venueCardModuleId} venue={venue} />
+                                        <div className={cssProfilePage.buttonDiv}>
+                                            <button onClick={() => document.getElementById(venueCardModuleId).showModal()} >edit</button>
+                                            <button className={cssProfilePage.delBtn} onClick={() => deleteVenue(venue.id, (message) => setVenueCardError({...venueCardError, [venue.id]: message}))}>delete</button>
+                                        </div>
+                                    </div>
+                                )
+                            })}
+                            <VenueModal id={venueModuleRef} />
+                        </section>) 
+                    : (<></>)}
+                    <section>
                     <h2>Your bookings</h2>
                     {bookings.map(booking => {
                         const {id, guests, dateFrom, dateTo, venue: {media: images, name: venueName, price: basePrice}} = booking
@@ -95,36 +127,6 @@ export default () => {
                         )
                     })}
                 </section>
-                { venueManager 
-                    ? (<section>
-                            <div className={cssProfilePage.venueListTitle} style={{display: "flex", justifyContent: "space-between"}}>
-                                <h2>Your venues</h2>
-                                <button  className={`primary ${cssProfilePage.venueListTitle_button}`} onClick={() => document.getElementById(venueModuleRef).showModal()}>create venue</button>
-                            </div>
-                            {venues.map(venue => {
-                                const errorMessage = venueCardError[venue.id]
-                                const moduleId = `venueModuleCard${venue.id}`    
-                            
-                                return (
-                                    <div key={venue.id} className={cssProfilePage.card}>
-                                        <span className={`${cssProfilePage.error} ${errorMessage ? cssProfilePage.hasError : ''}`}>{errorMessage}</span>
-                                        <Link to={`/venue/${venue.id}`} className={cssProfilePage.innerCard}>
-                                            <ImgCarusel images={venue.media} classNames={cssProfilePage.cardImg}/>
-                                            <div>
-                                                <h3>{venue.name}</h3>
-                                                <span>price per day: ${venue.price}</span>
-                                                <Rating givenRating={venue.rating} className={cssProfilePage.cardRating} />
-                                            </div>
-                                        </Link>
-                                        <VenueModal id={moduleId} venue={venue} />
-                                        <button onClick={() => document.getElementById(moduleId).showModal()} >edit</button>
-                                        <button className={cssProfilePage.delBtn} onClick={() => deleteVenue(venue.id, (message) => setVenueCardError({...venueCardError, [venue.id]: message}))}>delete</button>
-                                    </div>
-                                )
-                            })}
-                            <VenueModal id={venueModuleRef} />
-                        </section>) 
-                    : (<></>)}
             </div>
         </>
     )

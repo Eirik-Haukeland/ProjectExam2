@@ -1,3 +1,33 @@
+.search {
+    display: grid;
+    grid-template-columns: auto min-content;
+    font-size: 1.5rem;
+
+    & .searchInput {
+        grid-column: 1;
+        grid-row: 1;
+        border-radius: 1rem 0 0 1rem;
+        font-size: inherit;
+        padding-inline: .75rem;
+    }
+
+    & .searchSubmit {
+        grid-column: 2;
+        grid-row: 1;
+        border-left: 0;
+        border-radius: 0 1rem 1rem 0;
+        font-size: inherit;
+    }
+
+    & .searchError {
+        grid-column: span 2;
+        grid-row: 2;
+        color: red;
+        font-size: 1.5rem;
+    }
+
+}
+
 .venuesSection {
     --number-of-columns: 1;
 

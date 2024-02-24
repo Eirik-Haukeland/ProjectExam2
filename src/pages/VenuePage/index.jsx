@@ -1,16 +1,19 @@
 import { useParams } from "react-router-dom"
 import { useCurrentVenue, useNewBooking, useAuthenticationInfromation } from "../../store.js"
-import { useEffect, useState } from "react"
+import { useEffect, useRef, useState } from "react"
 import { shallow } from "zustand/shallow"
 import ImgCarusel from "../../components/imgCarusel/index.jsx"
 import cssVenuePage from "./venuePage.module.css"
 import Calendar from "../../components/Calendar/index.jsx"
 import Rating from "../../components/Rating/index.jsx"
+import BookingList from "../../components/BookingList/index.jsx"
 import noPageImg from "../../assets/404_error_img.jpeg"
 
 export default () => {
     const { venueId } = useParams()
-    const { name, description, media, price, maxGuests, hasWifi, hasParking, servesBreakfast, allowsPets, address, loadVenue, venueNotFound, fetchError } = useCurrentVenue(
+    const moduleRef = useRef()
+
+    const { name, description, media, price, maxGuests, hasWifi, hasParking, servesBreakfast, allowsPets, address, loadVenue, venueNotFound, fetchError, ownerName, bookings } = useCurrentVenue(
         (state) => ({
             name: state.name,
             description: state.description,
@@ -24,7 +27,9 @@ export default () => {
             address: state.address,
             loadVenue: state.loadVenue,
             venueNotFound: state.venueNotFound,
-            fetchError: state.fetchError
+            fetchError: state.fetchError,
+            ownerName: state.ownerName,
+            bookings: state.bookings,
         }),
         shallow
     )
@@ -40,17 +45,14 @@ export default () => {
         shallow
     )
 
-    const {isLoggedIn} = useAuthenticationInfromation(state => ({
-            isLoggedIn: state.isLoggedIn
+    const {isLoggedIn, userName} = useAuthenticationInfromation(state => ({
+            isLoggedIn: state.isLoggedIn,
+            userName: state.name
         }),
         shallow
     )
     
     useEffect(() => {document.title = `Holidaze - venue: ${name}`}, [])
-
-    useEffect(() => {
-        console.log(hasWifi, hasParking, servesBreakfast, allowsPets)
-    }, [hasWifi, hasParking, servesBreakfast, allowsPets])
 
     useEffect(() => {
         clearBooking()
@@ -72,41 +74,61 @@ export default () => {
                 <Rating/>
             </div>
             <ImgCarusel images={media} carousel={true} classNames={cssVenuePage.img}/>
-            <div className={cssVenuePage.order}>
-                <Calendar></Calendar>
-                <div className={cssVenuePage.numberOfGuests}>
-                    <label htmlFor="numberOfGuests">How meny people:</label>
-                    <select name="numberOfGuests" id="numberOfGuests" onChange={({target: {value}}) => {
-                        console.log(value)
-                        setGuestNumberForBooking(Number(value))
-                    }}>
+            { 
+                userName === ownerName
+                ? (
+                    <div className={cssVenuePage.bookings}>
+                        <h2>bookings</h2>
                         {
-                            
-                            Array.apply(null, Array(maxGuests)).map((_, index) => {
-                                console.log(maxGuests)
-                                return (<option key={index} value={index + 1} default={index === 0}>{index + 1} person</option>)
-                            })
+                            bookings.length >= 1
+                            ?   bookings.map(({dateFrom, dateTo, guests}) => {
+                                    if (new Date().valueOf() > new Date(dateTo).valueOf()) {
+                                        return
+                                    }
+
+                                    return (
+                                        <div className={cssVenuePage.bookingCard}>
+                                            <span>guests: {guests}</span>
+                                            <span>Arrival: {new Date(dateFrom).toLocaleDateString()}</span>
+                                            <span>Departure: {new Date(dateTo).toLocaleDateString()}</span>
+                                        </div>
+                                    )
+                                })
+                            : (<div className={cssVenuePage.noBookingsCard}>there are currently no bookings for this venue</div>)
                         }
-                    </select>
-                </div>
-                <div className={cssVenuePage.priceAndButton}>
-                    <span>total: ${totalPrice}</span>
-                    <button className="primary" disabled={!isLoggedIn} onClick={createABooking}>book a room</button>
-                </div>
-                {bookingErrors? (<span>{bookingErrors}</span>): (<></>)}
-            </div>
+                    </div>
+                )
+                : (
+                    <div className={cssVenuePage.order}>
+                        <Calendar></Calendar>
+                        <div className={cssVenuePage.numberOfGuests}>
+                            <label htmlFor="numberOfGuests">How meny people:</label>
+                            <select name="numberOfGuests" id="numberOfGuests" onChange={({target: {value}}) => {setGuestNumberForBooking(Number(value))}}>
+                            {
+                                Array.apply(null, Array(maxGuests)).map((_, index) => (<option key={index} value={index + 1} default={index === 0}>{index + 1} person</option>))
+                            }
+                            </select>
+                        </div>
+                        <div className={cssVenuePage.priceAndButton}>
+                            <span>total: ${totalPrice}</span>
+                            <button className="primary" disabled={!isLoggedIn} onClick={createABooking}>book a room</button>
+                        </div>
+                        {bookingErrors? (<span>{bookingErrors}</span>): (<></>)}
+                    </div>
+                )
+            }
             <div className={cssVenuePage.desc}>
                 <h2>Description</h2>
                 <p>{description}</p>
             </div>
             <table className={cssVenuePage.infoTable}>
                 <tbody>
-                    {   address 
+                    {   address !== "Unknown" 
                         ? (
                             <tr>
-                            <td>address</td>
-                            <td>{address}</td>
-                        </tr>
+                                <td>address</td>
+                                <td>{address}</td>
+                            </tr>
                         )
                         :(<></>)
                     }

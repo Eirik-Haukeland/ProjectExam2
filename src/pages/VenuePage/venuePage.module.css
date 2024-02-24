@@ -58,6 +58,32 @@
     justify-content: space-between;
 }
 
+.bookings {
+    grid-area: order;
+    min-width: 20rem;
+    display: flex;
+    flex-direction: column;
+    gap: .5rem;
+    overflow: auto;
+
+    & > h2 {
+        margin: 0;
+    }
+
+    & > .bookingCard, > .noBookingsCard {
+        padding: .5rem;
+        border-radius: 1rem;
+        background-color: #fafafa;
+        display: flex;
+        flex-direction: column;
+
+        &.noBookingsCard {
+            color: maroon;
+            border: maroon solid .25rem;
+        }
+    }
+}
+
 .priceAndButton {
     display: flex;
     justify-content: space-between;

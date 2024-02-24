@@ -3,37 +3,87 @@ import { persist } from 'zustand/middleware'
 import isCounty from "./utils/isCounty"
 
 export const useVenuesStore = createWithEqualityFn((set, get) => ({
-    venues: [],
+    allVenues: [],
+    searchVenues: [],
+    searchError: '',
+    displayVenues: [],
     offset: 0,
+    limit: 12,
     lastPage: false,
     venueListErrors: '',
-    clearVenues: () => set(() => ({
-        venues: [],
+    clearVenues: set({
+        displayVenues: [],
         offset: 0,
         lastPage: false
-    })),
+    }),
     getVenues: async () => {
         try {
-            const limit = 12
-            const offset = get().offset
-            const response = await fetch(`https://api.noroff.dev/api/v1/holidaze/venues?offset=${offset}&limit=${limit}`)
+            if (get().allVenues.length > 0) {
+                return
+            }
+
+            const response = await fetch(`https://api.noroff.dev/api/v1/holidaze/venues?limit=100`)
 
             if (!response.ok) {
                 throw new Error()
             }
             
             const json = await response.json()
-            set((state) => ({venues: [...state.venues, ...json]}))
+
+            set({
+                allVenues: json,
+                offset: 0
+            })
             
-            if (json.length < limit) {
-                set(() => ({ lastPage: true}))
-            } else {
-                set((state) => ({ offset: state.offset + limit }))
-            }
-            
+            const moreVenues = get().moreVenues
+            moreVenues()
         } catch (error) {
             set(({venueListErrors: 'an error occured when trying to get venues. pleace try again'}))
         }
+    },
+    moreVenues: () => {
+        const limit = get().limit
+        const offset = get().offset
+        const allVenues = get().allVenues
+        const searchVenues = get().searchVenues
+
+        let venueList = allVenues
+        if (searchVenues.length >= 1) {
+            venueList= searchVenues
+        }
+
+        const nextVenues = venueList.slice(offset, offset + limit)
+
+        if (nextVenues.length < limit) {
+            set((state) => ({
+                lastPage: true,
+                displayVenues: [...state.displayVenues, ...nextVenues]
+            }))
+        } else {
+            set((state) => ({ 
+                offset: state.offset + limit,
+                displayVenues: [...state.displayVenues, ...nextVenues]
+            }))
+        }
+    },
+    searchForVenues: ({searchString}) => {
+        const allVenues = get().allVenues
+
+        const searchRegex = RegExp(searchString.toLowerCase())
+        const searchResult = allVenues.filter(({name}) => searchRegex.test(name.toLowerCase()))
+        const searchError = searchResult.length >= 1 || searchString.length < 1 ? '' : 'there is no venue matching search'
+        
+        set({
+            searchVenues: searchResult,
+            displayVenues: [],
+            searchError: searchError,
+            offset: 0,
+            lastPage: false,
+            lastpage: searchResult > get().limit
+        })
+        
+        const moreVenues = get().moreVenues
+        moreVenues()
     }
 }))
 
@@ -56,6 +106,7 @@ export const useCurrentVenue = createWithEqualityFn((set, get) => ({
     zip: "",
     country: "",
     continent: "",
+    bookingDates: [],
     bookings: [],
     fetchErrors: '',
     ownerName: '',
@@ -69,8 +120,6 @@ export const useCurrentVenue = createWithEqualityFn((set, get) => ({
 
             const response = await fetch(`https://api.noroff.dev/api/v1/holidaze/venues/${id}?_bookings=true&_owner=true`)
             const json =  await response.json()
-
-            console.log(response)
             
             if (response.status === 404) {
                 throw new Error('venue not found')    
@@ -89,15 +138,19 @@ export const useCurrentVenue = createWithEqualityFn((set, get) => ({
                 rating: newRating,
                 created: newCreated,
                 updated: newUpdated,
-                hasWifi: newHasWifi,
-                hasParking: newHasParking,
-                servesBreakfast: newServesBreakfast,
-                allowsPets: newAllowsPets,
-                address: newAddress,
-                city: newCity,
-                zip: newZip,
-                country: newCountry,
-                continent: newContinent,
+                meta: {
+                    wifi: newHasWifi,
+                    parking: newHasParking,
+                    breakfast: newServesBreakfast,
+                    pets: newAllowsPets,
+                },
+                location: {
+                    address: newAddress,
+                    city: newCity,
+                    zip: newZip,
+                    country: newCountry,
+                    continent: newContinent,
+                },
                 bookings: newBookings,
                 owner: {name: newOwnerName} } = json
             const { 
@@ -202,7 +255,10 @@ export const useCurrentVenue = createWithEqualityFn((set, get) => ({
                 }, [])
 
 
-                set(({ bookings: bookingsToSet }))
+                set({
+                    bookings: newBookings, 
+                    bookingDates: bookingsToSet 
+                })
             }
            
         } catch (error) {
@@ -238,13 +294,8 @@ export const useNewBooking = createWithEqualityFn((set, get) => ({
             const accessToken = useAuthenticationInfromation.getState().accessToken
             const {dateFrom, dateTo, guests, venueId} = get()
             
-            // ensure that booking last to end of day
-            const editedDateTo = new Date(`${dateTo.toISOString().split('T')[0]}T23:59:59:000Z`)
-
-            
-            const timeStampCheck = RegExp(/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}.\d{3}Z$/)
-            
-            if ( !(timeStampCheck.test(dateFrom.toISOString()) || timeStampCheck.test(editedDateTo.toISOString())) ) {
+            const timeStampCheck = RegExp(/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}Z$/)
+            if ( !(timeStampCheck.test(dateFrom.toISOString()) || timeStampCheck.test(dateTo.toISOString())) ) {
                 throw new Error('Pleace select the dates you want to stay')
             }
             
@@ -261,7 +312,7 @@ export const useNewBooking = createWithEqualityFn((set, get) => ({
                     method: "POST",
                     body: JSON.stringify({
                         dateFrom,
-                        dateTo: editedDateTo,
+                        dateTo,
                         guests,
                         venueId
                     }),
@@ -274,15 +325,18 @@ export const useNewBooking = createWithEqualityFn((set, get) => ({
                 throw new Error ('an error occured when trying make a booking. pleace try again')
             }
 
-            useCurrentVenue.updateVenue(venueId)
+            useCurrentVenue.getState().loadVenue(venueId)
         } catch (error) {
             set(({bookingErrors: error.message }))
         }
     },
     setDates: ({dateFrom, dateTo}) => {
+        // milliseconds * seconds * minutes * hours
+        const dayInMillisecounds = 1000 * 60 * 60 * 24 
+
         set(({
-            dateFrom: new Date(dateFrom),
-            dateTo: new Date(dateTo)
+            dateFrom: new Date(dateFrom.valueOf() + dayInMillisecounds),
+            dateTo: new Date(dateTo.valueOf() + dayInMillisecounds)
         }))
 
         if (dateFrom === dateTo) {
@@ -291,8 +345,6 @@ export const useNewBooking = createWithEqualityFn((set, get) => ({
         }
 
         let nthDate = new Date(dateFrom)
-        // milliseconds * seconds * minutes * hours
-        const dayInMillisecounds = 1000 * 60 * 60 * 24 
         let dateCount = 1
         
         for (let days = 0; nthDate <= dateTo; days++ && (nthDate = new Date(dateFrom.valueOf() + (dayInMillisecounds * days))) ) {
@@ -486,6 +538,8 @@ export const useAuthenticationInfromation = createWithEqualityFn(persist((set, g
             }
 
             set(json)
+
+            console.warn("useAuthenticationInfromation.refreshUserData neads better error handling")
         } catch (error) {
             console.error(error.message)
         }
@@ -534,15 +588,11 @@ export const useVenueCreateStore = createWithEqualityFn((set) => ({
                 return
             }
 
-            console.log(error.message)
             onError(error.message)
         }
     },
     createVenue: async (body, fetchInfo, onSuccess) => {
         try {
-
-            console.log(body)
-
             const isLoggedIn = useAuthenticationInfromation.getState().isLoggedIn
             if (!isLoggedIn) {
                 throw new Error("please login before trying to create a venue")
