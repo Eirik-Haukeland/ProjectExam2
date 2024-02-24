@@ -8,7 +8,7 @@ import { useState } from "react";
 export default function Calendar({className}) {
     const today = new Date()
     const setDates = useNewBooking(state => state.setDates)
-    const bookings = useCurrentVenue(state => state.bookings)
+    const bookedDates = useCurrentVenue(state => state.bookingDates)
 
     const [ranges, setRanges] = useState([{
       startDate: today,
@@ -36,7 +36,7 @@ export default function Calendar({className}) {
             moveRangeOnFirstSelection={false}
             ranges={ranges}
             minDate={today}
-            disabledDates={bookings}
+            disabledDates={bookedDates}
             className={className}
         />
     </>)  
