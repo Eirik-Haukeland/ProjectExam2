@@ -6,7 +6,6 @@ import ImgCarusel from "../../components/imgCarusel/index.jsx"
 import cssVenuePage from "./venuePage.module.css"
 import Calendar from "../../components/Calendar/index.jsx"
 import Rating from "../../components/Rating/index.jsx"
-import BookingList from "../../components/BookingList/index.jsx"
 import noPageImg from "../../assets/404_error_img.jpeg"
 
 export default () => {
