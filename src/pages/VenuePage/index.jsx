@@ -47,9 +47,9 @@ export default () => {
         shallow
     )
 
-    const {isLoggedIn, username} = useUserStore(state => ({
+    const {isLoggedIn, userName} = useUserStore(state => ({
             isLoggedIn: state.isLoggedIn,
-            username: state.name
+            userName: state.name
         }),
         shallow
     )
@@ -77,7 +77,7 @@ export default () => {
             </div>
             <ImgCarusel images={media} classNames={cssVenuePage.img}/>
             { 
-                username === ownerName
+                userName === ownerName
                 ? (
                     <div className={cssVenuePage.bookings}>
                         <h2>Bookings</h2>
