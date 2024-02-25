@@ -78,9 +78,20 @@ button:disabled.primary {
     color: #213547;
     background-color: #ffffff;
   }
+
+  a,
+  a:visited {
+    color: hsl(214 100% 62%);
+  }
+
   a:hover {
     color: #747bff;
   }
+
+  button.primary:hover {
+    background-color: #747bff;
+  }
+
   button {
     background-color: #f9f9f9;
   }
