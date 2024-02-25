@@ -41,33 +41,33 @@ export default () => {
         <>
             <h1 hidden>Profile Page</h1>
             <section className={cssProfilePage.container}>
-                <h2 hidden>profile information</h2>
+                <h2 hidden>Profile information</h2>
                 <div className={cssProfilePage.profileInformation}>
                     <div className={cssProfilePage.profilePicture}>
                         {
                             avatar === null || avatar === ''
-                            ?   (<img src={noProfile} alt="you currently have no profile picture" />)
-                            :   (<img src={avatar} alt="your profile picture" />)
+                            ?   (<img src={noProfile} alt="You currently have no profile picture" />)
+                            :   (<img src={avatar} alt="Your profile picture" />)
                         }
                     </div>
                     <table>
                         <tbody>
                             <tr>
-                                <td>user name:</td>
+                                <td>Username:</td>
                                 <td>{name}</td>
                             </tr>
                             <tr>
-                                <td>email:</td>
+                                <td>Email:</td>
                                 <td>{email}</td>
                             </tr>
                             <tr className={cssProfilePage.table_row_venue_manager}>
-                                <td>venue manager:</td>
+                                <td>Venue manager:</td>
                                 <td>{venueManager ? 'Yes' : 'No'}</td>
                             </tr>
                         </tbody>
                     </table>
                     <button className={cssProfilePage.changeTool} onClick={() => ProfileModuleRef.current?.showModal()}>
-                        <img src={wrench} alt="change image" />
+                        <img src={wrench} alt="Change image" />
                     </button>
                 </div>
                 <ProfileModule ref={ProfileModuleRef} />
@@ -78,7 +78,7 @@ export default () => {
                     ? (<section>
                             <div className={cssProfilePage.venueListTitle} style={{display: "flex", justifyContent: "space-between"}}>
                                 <h2>Your venues</h2>
-                                <button  className={`primary ${cssProfilePage.venueListTitle_button}`} onClick={() => document.getElementById(venueModuleRef).showModal()}>create venue</button>
+                                <button  className={`primary ${cssProfilePage.venueListTitle_button}`} onClick={() => document.getElementById(venueModuleRef).showModal()}>Create venue</button>
                             </div>
                             {venues.map(venue => {
                                 const errorMessage = venueCardError[venue.id]
@@ -91,14 +91,14 @@ export default () => {
                                             <ImgCarusel images={venue.media} classNames={cssProfilePage.cardImg}/>
                                             <div>
                                                 <h3>{venue.name}</h3>
-                                                <span>price per day: ${venue.price}</span>
+                                                <span>Price per day: ${venue.price}</span>
                                                 <Rating givenRating={venue.rating} className={cssProfilePage.cardRating} />
                                             </div>
                                         </Link>
                                         <VenueModal id={venueCardModuleId} venue={venue} />
                                         <div className={cssProfilePage.buttonDiv}>
-                                            <button onClick={() => document.getElementById(venueCardModuleId).showModal()} >edit</button>
-                                            <button className={cssProfilePage.delBtn} onClick={() => deleteVenue(venue.id, (message) => setVenueCardError({...venueCardError, [venue.id]: message}))}>delete</button>
+                                            <button onClick={() => document.getElementById(venueCardModuleId).showModal()}>Edit</button>
+                                            <button className={cssProfilePage.delBtn} onClick={() => deleteVenue(venue.id, (message) => setVenueCardError({...venueCardError, [venue.id]: message}))}>Delete</button>
                                         </div>
                                     </div>
                                 )
@@ -120,8 +120,8 @@ export default () => {
                                     <ImgCarusel images={images} classNames={cssProfilePage.cardImg}/>
                                     <div>
                                         <h3>{venueName}</h3>
-                                        <span>price per day: ${price}</span>
-                                        <span className={cssProfilePage.cardDates} >From: {displayDateFrom}, To: {displayDateTo}</span>
+                                        <span>Price per day: ${price}</span>
+                                        <span className={cssProfilePage.cardDates} >From: {displayDateFrom} To: {displayDateTo}</span>
                                     </div>
                                 </div>
                             </div>

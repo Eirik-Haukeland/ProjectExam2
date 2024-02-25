@@ -30,7 +30,7 @@ export default function Calendar({className}) {
       })
     }
 
-    return (<>
+    return (
         <DateRange 
             editableDateInputs={true}
             onChange={item => updateCalendar(item.selection)}
@@ -39,6 +39,5 @@ export default function Calendar({className}) {
             minDate={today}
             disabledDates={bookedDates}
             className={className}
-        />
-    </>)  
+        />)  
 }
