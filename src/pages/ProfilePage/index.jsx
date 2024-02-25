@@ -116,14 +116,14 @@ export default () => {
 
                         return (
                             <div key={id} className={cssProfilePage.card}>
-                                <div className={cssProfilePage.innerCard}>
+                                <Link to={`/venue/${id}`} className={cssProfilePage.innerCard}>
                                     <Image src={images[0] || ''} className={cssProfilePage.cardImg} />
                                     <div>
                                         <h3>{venueName}</h3>
                                         <span>Price per day: ${price}</span>
                                         <span className={cssProfilePage.cardDates} >From: {displayDateFrom} To: {displayDateTo}</span>
                                     </div>
-                                </div>
+                                </Link>
                             </div>
                         )
                     })}
