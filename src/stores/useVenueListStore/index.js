@@ -46,9 +46,10 @@ export const useVenuesStore = createWithEqualityFn((set, get) => ({
         const offset = get().offset
         const allVenues = get().allVenues
         const searchVenues = get().searchVenues
+        const searchError = get().searchError
 
         let venueList = allVenues
-        if (searchVenues.length >= 1) {
+        if (searchVenues.length >= 1 || searchError) {
             venueList= searchVenues
         }
 

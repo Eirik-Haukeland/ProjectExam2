@@ -1,0 +1,43 @@
+.search {
+    display: grid;
+    grid-template-columns: 1fr min-content;
+    font-size: 1rem;
+    max-width: 100%;
+
+    & .searchInput {
+        grid-column: 1;
+        grid-row: 1;
+        border: .1rem solid black;
+        border-radius: 0.4rem 0 0 0.4rem;
+        font-size: inherit;
+        padding-inline: .75rem;
+        width: 100%;
+    }
+
+    & .searchSubmit {
+        grid-column: 2;
+        grid-row: 1;
+        border: .1rem solid black;
+        border-left: 0;
+        border-radius: 0 .4rem 0.4rem 0;
+        padding-inline: .75rem;
+        padding-block: .25rem;
+        font-size: inherit;
+    }
+
+    & .searchError {
+        grid-column: span 2;
+        grid-row: 2;
+        color: red;
+        font-size: 1.5rem;
+    }
+
+}
+
+
+@media screen and (min-width: 800px) {
+    .search {
+        font-size: 1.25rem;
+    }
+
+}

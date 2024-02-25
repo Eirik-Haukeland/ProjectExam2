@@ -64,19 +64,34 @@ button.primary {
   color: white;
 }
 
-button:disabled,
-  button:disabled.primary {
-    background-color: hsl(214 30% 62%);
-  }
+button:disabled {
+  cursor:not-allowed ;
+  background-color: #252525;
+}
+
+button:disabled.primary {
+  background-color: hsl(214 30% 62%);
+}
 
 @media (prefers-color-scheme: light) {
   :root {
     color: #213547;
     background-color: #ffffff;
   }
+
+  a,
+  a:visited {
+    color: hsl(214 100% 62%);
+  }
+
   a:hover {
     color: #747bff;
   }
+
+  button.primary:hover {
+    background-color: #747bff;
+  }
+
   button {
     background-color: #f9f9f9;
   }
@@ -84,7 +99,11 @@ button:disabled,
     background-color: hsl(214 100% 62%);
     color: white;
   }
-  button:disabled,
+  button:disabled{
+    background-color: #ddd;
+
+  }
+
   button:disabled.primary {
     background-color: hsl(214 50% 62%);
   }

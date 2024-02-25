@@ -1,4 +1,4 @@
-.container {
+a.container {
     display: grid;
     grid-template: 
         "image image" auto
@@ -17,9 +17,9 @@
     color: black;
 }
 
-.container:focus-visible,
-.container:hover {
-    background-color: #eee;
+a.container:focus-visible,
+a.container:hover {
+    background-color: #eff2f7;
     color: black;
 }
 

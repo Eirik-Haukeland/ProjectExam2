@@ -9,8 +9,9 @@
     width: 100%;
     background-size: cover;
     background-position: center;
+    object-fit: contain;
+    background-color: #eff2f7;;
 }
-
 
 .caruselConteiner > .caruselImg {
     grid-column: span 2;

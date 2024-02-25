@@ -4,9 +4,10 @@
     display: flex;
     align-items: end;
     justify-content: space-between;
+    flex-wrap: wrap;
 }
 
-.logo {
+a.logo {
     font-size: 1.75rem;
     color: #000;
 }

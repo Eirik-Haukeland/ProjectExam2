@@ -147,27 +147,31 @@ export default createWithEqualityFn((set, get) => ({
                 set(({ ownerName: newOwnerName }))
             }
             if (newBookings !== oldBookings && Array.isArray(newBookings)) { 
+                const today = new Date()
 
-                const bookingsToSet = newBookings.reduce((newList, booking) => {
-                    if (typeof booking.dateTo === 'undefined') {
+                let tdateFrom = new Date()
+                tdateFrom.setUTCDate(tdateFrom.getUTCDate() - 1)
+                const bookingsToSet = [...newBookings, {dateFrom: tdateFrom.toISOString(), dateTo:new Date().toISOString()}].reduce((newList, booking) => {
+                    if (!booking.dateTo) {
                         return newList
                     }
                     
-                    const toDay = new Date()
                     const dateTo = new Date(booking.dateTo.split('T')[0])
-                    // milliseconds * seconds * minutes * hours
-                    const dayInMillisecounds = 1000 * 60 * 60 * 24 
 
                     // to get all the dates between dateFrom and dateTo on the booking
-                    for (let newDate = new Date(booking.dateFrom.split('T')[0]); newDate.valueOf() <= dateTo.valueOf(); newDate = new Date(newDate.getTime() + dayInMillisecounds)) {
-                        if (newDate.valueOf() > toDay.valueOf() && !newList.includes(newDate.toISOString())) {
-                            newList = [...newList, newDate]
+                    for (let newDate = new Date(booking.dateFrom.split('T')[0]);
+                        newDate.valueOf() <= dateTo.valueOf();
+                        newDate.setUTCDate(newDate.getUTCDate() + 1)
+                        ) {
+                        if (newDate.valueOf() >= today.valueOf() && !newList.includes(newDate.toISOString())) {
+                            newList = [...newList, newDate.toISOString()]
                         }
                     }
+
+
                 
                     return newList
-                }, [])
-
+                }, []).sort().map(date => new Date(date))
 
                 set({
                     bookings: newBookings, 

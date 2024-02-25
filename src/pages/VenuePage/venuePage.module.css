@@ -111,7 +111,7 @@
 }
 
 .infoTable  tr:nth-child(odd) {
-    background-color: hsla(0, 0%, 0%, 10%);
+    background-color: #eff2f7;
 }
 
 @media (max-width: 900px) {

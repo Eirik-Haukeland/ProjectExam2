@@ -25,9 +25,5 @@
     &:not(span) {
         border: .25rem solid red;
         padding: .15rem;
-
-        &:has(+ form input:focus) {
-            display: none;
-        }
     }
 }

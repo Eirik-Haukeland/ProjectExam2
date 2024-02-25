@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import noImage from "../../assets/No_Image_Available.jpg"
 import cssImgCarusel from "./imgCarusel.module.css"
+import Image from "../Image"
 
 export default function ImgCarusel({images, classNames, carusel}) {
 
@@ -29,7 +30,7 @@ export default function ImgCarusel({images, classNames, carusel}) {
         setImageNumber(imageNumber <= 0 ? numberOfImages : imageNumber - 1)
     }
 
-    return (carusel === true && numberOfImages > 0) 
+    return (numberOfImages > 0) 
     ?   (<div className={`${classNames} ${cssImgCarusel.caruselConteiner}`}>
             {images.map((img, index) => (
                 <div role="img" 
@@ -42,8 +43,8 @@ export default function ImgCarusel({images, classNames, carusel}) {
             <button onClick={prevImg}>Prev</button>
             <button onClick={nextImg}>Next</button>
         </div>)
-    :   (<img src={currentImg}
+    :   ( <Image src={currentImg}
             alt={currentAlt}
-            className={`${classNames} ${carusel ? cssImgCarusel.caruselImg : ''}`} 
+            className={`${classNames} ${cssImgCarusel.caruselImg}`} 
         />)
 }

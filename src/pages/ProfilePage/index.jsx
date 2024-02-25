@@ -9,7 +9,7 @@ import useManageVenueStore from "../../stores/useManageVenueStore/index.js"
 import noProfile from "../../assets/no_profile.svg"
 import wrench from "../../assets/wrench.svg"
 import Rating from "../../components/Rating/index.jsx"
-import ImgCarusel from "../../components/imgCarusel/index.jsx";
+import Image from "../../components/Image/index.jsx"
 import VenueModal from "../../components/Forms/venueModal/index.jsx";
 import ProfileModule from "../../components/Forms/profileModule/index.jsx";
 
@@ -88,7 +88,7 @@ export default () => {
                                     <div key={venue.id} className={cssProfilePage.card}>
                                         <span className={`${cssProfilePage.error} ${errorMessage ? cssProfilePage.hasError : ''}`}>{errorMessage}</span>
                                         <Link to={`/venue/${venue.id}`} className={cssProfilePage.innerCard}>
-                                            <ImgCarusel images={venue.media} classNames={cssProfilePage.cardImg}/>
+                                            <Image src={venue?.media[0]} className={cssProfilePage.cardImg} />
                                             <div>
                                                 <h3>{venue.name}</h3>
                                                 <span>Price per day: ${venue.price}</span>
@@ -116,14 +116,14 @@ export default () => {
 
                         return (
                             <div key={id} className={cssProfilePage.card}>
-                                <div className={cssProfilePage.innerCard}>
-                                    <ImgCarusel images={images} classNames={cssProfilePage.cardImg}/>
+                                <Link to={`/venue/${id}`} className={cssProfilePage.innerCard}>
+                                    <Image src={images[0] || ''} className={cssProfilePage.cardImg} />
                                     <div>
                                         <h3>{venueName}</h3>
                                         <span>Price per day: ${price}</span>
                                         <span className={cssProfilePage.cardDates} >From: {displayDateFrom} To: {displayDateTo}</span>
                                     </div>
-                                </div>
+                                </Link>
                             </div>
                         )
                     })}
