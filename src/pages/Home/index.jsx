@@ -29,8 +29,6 @@ export default () => {
         }),
         shallow
     );
-
-    useEffect(() => {console.log(displayVenues)}, [displayVenues])
     
     const {
         register,

@@ -75,7 +75,7 @@ export default () => {
                 <h1>{name}</h1>
                 <Rating/>
             </div>
-            <ImgCarusel images={media} carusel={true} classNames={cssVenuePage.img}/>
+            <ImgCarusel images={media} classNames={cssVenuePage.img}/>
             { 
                 username === ownerName
                 ? (
