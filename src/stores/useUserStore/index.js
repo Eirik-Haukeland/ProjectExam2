@@ -14,14 +14,16 @@ export default createWithEqualityFn(persist((set, get) => ({
     modulePageOpen: 'register',
     bookings: [],
     venues: [],
-    clearErrors: () => set(({formError: ''})), 
+    clearErrors: () => set({formError: ''}), 
     openModule: (modulepage) => {
-        set(({
+        set({
             isModuleOpen: true,
-            modulePageOpen: modulepage
-        }))
+            modulePageOpen: modulepage,
+        })
     },
-    closeModule: () => set(({isModuleOpen: false})),
+    closeModule: () => set({
+        isModuleOpen: false,
+        formError: '' }),
     register: async (body = {}) => {
         try {
             const response = await fetch('https://api.noroff.dev/api/v1/holidaze/auth/register', {
@@ -44,6 +46,7 @@ export default createWithEqualityFn(persist((set, get) => ({
                 email: json.email,
                 avatar: json.avatar,
                 venueManager: json.venueManager,
+                formError: ''
             }))
 
             get().login({
@@ -66,7 +69,9 @@ export default createWithEqualityFn(persist((set, get) => ({
             const json = await response.json()   
 
             if (json.errors && json.errors[0].message) {
-                throw new Error(json.errors[0].message)
+                set({formError: json.errors[0].message})
+                return
+                //throw new Error(json.errors[0].message)
             }
             if (!response.ok) {
                 throw new Error('Something went wrong when loging in to your account. Please try again later')
@@ -78,7 +83,8 @@ export default createWithEqualityFn(persist((set, get) => ({
                 avatar: json.avatar,
                 venueManager: json.venueManager,
                 accessToken: `Bearer ${json.accessToken}`,
-                isLoggedIn: true
+                isLoggedIn: true,
+                formError: ''
             }))
             get().closeModule()
         } catch (error) {
