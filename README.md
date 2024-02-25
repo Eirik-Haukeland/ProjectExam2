@@ -1,12 +1,31 @@
-# ProjectExam2
+[![Netlify Status](https://api.netlify.com/api/v1/badges/ffbeb9ca-9667-4003-b677-720d4694372d/deploy-status)](https://app.netlify.com/sites/ebhholidaze/deploys)
+
+# [Project exam 2: holidaze](https://github.com/Eirik-Haukeland/ProjectExam2)
+
+this is my exam project for noroff front end course. is uses [noroff's holidaze api](https://docs.noroff.dev/docs/v1/holidaze/authentication) to simulate a hotel booking site. [the site is live on netlify](https://main--ebhholidaze.netlify.app/)
 
 [link to design](https://www.figma.com/file/FUWQP6EOiVvfkLZZhc8pMj/Untitled?type=design&node-id=2-25&mode=design&t=owE8poJBZz6Kd3l2-0)
 
-## project is created with React + Vite
+## Requierments
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+to work on this poject you need [git](https://git-scm.com/) and [npm](https://docs.npmjs.com/downloading-and-installing-node-js-and-npm).
 
-Currently, two official plugins are available:
+after you have git and npm, run this on your local device first download this porject to your local computer:
+``` shell
+git clone https://github.com/Eirik-Haukeland/ProjectExam2
+```
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+then navigate to the folder and run the following to get a development enviorment:
+``` shell
+npm run dev
+```
+
+netlify will build on depolyment but you can run the following to build localy:
+```shell
+npm run build
+```
+
+if you want to run a liter it is awailable with this command:
+```shell
+npm run lint
+```
