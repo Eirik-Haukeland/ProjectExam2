@@ -149,9 +149,7 @@ export default createWithEqualityFn((set, get) => ({
             if (newBookings !== oldBookings && Array.isArray(newBookings)) { 
                 const today = new Date()
 
-                let tdateFrom = new Date()
-                tdateFrom.setUTCDate(tdateFrom.getUTCDate() - 1)
-                const bookingsToSet = [...newBookings, {dateFrom: tdateFrom.toISOString(), dateTo:new Date().toISOString()}].reduce((newList, booking) => {
+                const bookingsToSet = newBookings.reduce((newList, booking) => {
                     if (!booking.dateTo) {
                         return newList
                     }
@@ -168,10 +166,8 @@ export default createWithEqualityFn((set, get) => ({
                         }
                     }
 
-
-                
                     return newList
-                }, []).sort().map(date => new Date(date))
+                }, []).map(date => new Date(date))
 
                 set({
                     bookings: newBookings, 
