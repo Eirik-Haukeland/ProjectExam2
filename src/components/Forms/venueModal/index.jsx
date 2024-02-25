@@ -11,7 +11,7 @@ const schema = yup
     .object({
         name: yup.string().required('Please give this venue a name'),
         description: yup.string().required('Please give this venue a description'),
-        media: yup.array(yup.string().url('Must be a valid URL')),
+        media: yup.array(yup.string().url('Must be a valid URL').required('You must give a URL or reomve this feeld')),
         price: yup.number().min(1).required('Please tell us how mutch you want to charge'),
         maxGuests: yup.number()
             .min(1, "A venue must at least have room for one guest")
@@ -110,7 +110,7 @@ export default ({venue, id}) => {
                                     <div key={field.id} className={cssVenueModal.imageInput}>
                                         <input type="url" name="media" placeholder="https://example.com"  {...register(`media[${index}]`)} />
                                         <button type="button" className={cssVenueModal.delBtn} onClick={() => remove(index)}>Remove</button>
-                                        <span className={cssVenueModal.error}>{errors.media?.message}</span>     
+                                        <span className={cssVenueModal.error}>{errors.media && errors.media[index]?.message}</span>     
                                     </div>
                                 )
                             )

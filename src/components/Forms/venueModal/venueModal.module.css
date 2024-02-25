@@ -61,8 +61,13 @@
                 gap: .5rem;
 
                 .imageInput {
-                    display: flex;
+                    display: grid;
+                    grid-template-columns: auto min-content;
                     gap: .25rem;
+
+                    & .error {
+                        grid-column: span 2;
+                    }
                 }
             
                 & .delBtn {
