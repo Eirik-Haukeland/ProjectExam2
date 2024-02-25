@@ -33,18 +33,18 @@ export default function Auth() {
                         openModule(innerText)
                         clearErrors()
                     }}}
-                    className={(modulePageOpen === 'login' ? "primary" : '')}>login</button>
+                    className={(modulePageOpen === 'Login' ? "primary" : '')}>Login</button>
                 <button 
                     type="button"
                     onClick={({target: {innerText}}) => {if (modulePageOpen !== innerText) {
                         openModule(innerText)
                         clearErrors()
                     }}}
-                    className={(modulePageOpen === 'register' ? "primary" : '')}>register</button>
+                    className={(modulePageOpen === 'Register' ? "primary" : '')}>Register</button>
             </div>
             {formError ? (<div className={cssAuth.error}>{formError}</div>): (<></>)}
             {
-                modulePageOpen === 'register'
+                modulePageOpen === 'Register'
                 ? <RegisterFrom />
                 : <LoginForm />
             }

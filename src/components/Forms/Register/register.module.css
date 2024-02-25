@@ -1,0 +1,39 @@
+.error {
+    color: red;
+
+    &:not(span) {
+        border: .25rem solid red;
+        padding: .15rem;
+
+        &:has(+ form input:focus) {
+            display: none;
+        }
+    }
+}
+
+.form {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    column-gap: .5rem;
+    row-gap: .75rem;
+}
+
+.textInput {
+    grid-column: span 2;
+
+    display: flex;
+    flex-direction: column;
+}
+
+.checkboxInput {
+    grid-column: span 2;
+
+    margin-bottom: .5rem;
+
+    display: grid;
+    grid-template-columns: min-content 1fr;
+}
+
+.checkboxInput > span {
+    grid-column: span 2;
+}

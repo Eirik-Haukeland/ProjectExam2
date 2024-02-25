@@ -3,7 +3,7 @@ import useUserStore from "../../../stores/useUserStore/index.js"
 import { useForm } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup'
-import cssAuth from "../Auth/auth.module.css"
+import cssLogin from "./login.module.css"
 
 const schema = yup
 .object({
@@ -27,6 +27,7 @@ export default function LoginForm() {
     }), shallow)
 
     const {
+        reset,
         register,
         handleSubmit,
         formState: { errors },
@@ -35,18 +36,18 @@ export default function LoginForm() {
     })
 
     return (
-        <form className={cssAuth.form} target="_blank" onSubmit={handleSubmit(loginUser)}>
-            <div className={cssAuth.textInput}>
+        <form className={cssLogin.form} target="_blank" onSubmit={handleSubmit(loginUser)}>
+            <div className={cssLogin.textInput}>
                 <label htmlFor="login_userEmail">Email:</label>
                 <input id="login_userEmail" autoComplete="username" autoFocus={modulePageOpen === 'login'} {...register('email')} />
-                <span className={cssAuth.error}>{errors.email?.message}</span>
+                <span className={cssLogin.error}>{errors.email?.message}</span>
             </div>            
-            <div className={cssAuth.textInput}>
+            <div className={cssLogin.textInput}>
                 <label htmlFor="login_Password">Password:</label>
                 <input id="login_Password" type="password" autoComplete="current-password" {...register('password')} />
-                <span className={cssAuth.error}>{errors.password?.message}</span>
+                <span className={cssLogin.error}>{errors.password?.message}</span>
             </div>
-            <button value="cancel" formMethod="dialog" onClick={closeModule}>Close</button>
+            <button type="button" value="cancel" onClick={() => {reset(); closeModule()}}>Close</button>
             <button type="submit" className="primary" data-dismiss="static">Login</button>
         </form>
     )
