@@ -37,7 +37,7 @@ export default function Search() {
             <label className={cssSearch.searchLabel} htmlFor="searchBox" hidden>Search by Name</label>
             <input className={cssSearch.searchInput} defaultValue={searchText} type="search" id="searchBox" {...register('searchString')} />
             <span className={cssSearch.searchError}>{errors.searchString?.message}{searchError ? `\n${searchError}` : ''}</span>
-            <input className={cssSearch.searchSubmit} type="submit" value="search" />
+            <button type="submit" className={`${cssSearch.searchSubmit} primary`}>Submit</button>
         </form>
     )
 }
