@@ -3,7 +3,7 @@ import { useForm } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup'
 
-import { useAuthenticationInfromation } from "../../../store.js"
+import useUserStore from "../../../stores/useUserStore/index.js"
 
 import { forwardRef } from "react";
 import cssProfileModule from "./profileModule.module.css"
@@ -19,7 +19,7 @@ const profileSchema = yup
 
 export default forwardRef(({}, ref) => {
 
-    const { avatar, venueManager, changeProfile, formError } = useAuthenticationInfromation((state) => ({
+    const { avatar, venueManager, changeProfile, formError } = useUserStore((state) => ({
         avatar: state.avatar,
         venueManager: state.venueManager,
         changeProfile: state.changeProfile,

@@ -1,11 +1,11 @@
 import { Link } from "react-router-dom"
 import HeaderCss from "./header.module.css"
-import { useAuthenticationInfromation } from '../../store.js'
+import useUserStore from "../../stores/useUserStore/index.js"
 import { shallow } from "zustand/shallow"
 
 export default () => {
 
-    const {openModule, isLoggedIn, logout} = useAuthenticationInfromation(status => ({
+    const {openModule, isLoggedIn, logout} = useUserStore(status => ({
         openModule: status.openModule,
         isLoggedIn: status.isLoggedIn,
         logout: status.logout,

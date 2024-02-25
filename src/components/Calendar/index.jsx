@@ -2,13 +2,14 @@ import { DateRange } from 'react-date-range'; // date picker
 import 'react-date-range/dist/styles.css'; // main css file for date picker
 import 'react-date-range/dist/theme/default.css'; // theme css file for date picker
 
-import { useCurrentVenue, useNewBooking } from '../../store';
+import useCreateBookingStore from  "../../stores/useCreateBookingStore/index.js"
+import useCurrentVenueStore from '../../stores/useCurrentVenueStore/index.js';
 import { useState } from "react";
 
 export default function Calendar({className}) {
     const today = new Date()
-    const setDates = useNewBooking(state => state.setDates)
-    const bookedDates = useCurrentVenue(state => state.bookingDates)
+    const setDates = useCreateBookingStore(state => state.setDates)
+    const bookedDates = useCurrentVenueStore(state => state.bookingDates)
 
     const [ranges, setRanges] = useState([{
       startDate: today,

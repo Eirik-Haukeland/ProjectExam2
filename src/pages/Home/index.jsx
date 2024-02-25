@@ -1,7 +1,7 @@
 import homeCss from "./home.module.css"
 
 import Card from "../../components/Card";
-import { useVenuesStore } from "../../store"
+import { useVenuesStore } from "../../stores/useVenueListStore/index.js"
 import { useEffect } from "react";
 
 import { useForm } from 'react-hook-form'

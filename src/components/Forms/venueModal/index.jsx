@@ -4,7 +4,8 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup'
 
 import cssVenueModal from "./venueModal.module.css"
-import { useAuthenticationInfromation, useVenueCreateStore } from '../../../store';
+import useUserStore from "../../../stores/useUserStore/index.js"
+import useManageVenueStore from '../../../stores/useManageVenueStore/index.js'
 
 
 const venueSchema = yup
@@ -31,9 +32,9 @@ const venueSchema = yup
 
 export default ({venue, id}) => {
 
-    const refreshUserData = useAuthenticationInfromation((state) => state.refreshUserData)
+    const refreshUserData = useUserStore((state) => state.refreshUserData)
 
-    const {createVenue, venueCreationError } = useVenueCreateStore(state => ({
+    const {createVenue, venueCreationError } = useManageVenueStore(state => ({
         createVenue: state.createVenue,
         venueCreationError: state.venueCreationError,
     }), shallow)

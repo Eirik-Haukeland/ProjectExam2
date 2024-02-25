@@ -1,5 +1,5 @@
 import { shallow } from "zustand/shallow"
-import { useAuthenticationInfromation } from '../../../store.js'
+import useUserStore from "../../../stores/useUserStore/index.js"
 import { useEffect, useRef } from 'react'
 import { useForm } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup';
@@ -21,7 +21,7 @@ const loginSchema = yup
 
 function LoginForm() {
 
-    const {closeModule, modulePageOpen, loginUser} = useAuthenticationInfromation(status => ({
+    const {closeModule, modulePageOpen, loginUser} = useUserStore(status => ({
         closeModule: status.closeModule,
         modulePageOpen: status.modulePageOpen,
         loginUser: status.login
@@ -78,7 +78,7 @@ const registerSchema = yup
 
 function RegisterFrom () {
 
-    const {closeModule, modulePageOpen, registerUser, isLoggedIn} = useAuthenticationInfromation(status => ({
+    const {closeModule, modulePageOpen, registerUser, isLoggedIn} = useUserStore(status => ({
         closeModule: status.closeModule,
         modulePageOpen: status.modulePageOpen,
         registerUser: status.register,
@@ -137,7 +137,7 @@ function RegisterFrom () {
 export default function Auth() {
     const moduleRef = useRef(null)
 
-    const {isModuleOpen, modulePageOpen, openModule, formError, clearErrors} = useAuthenticationInfromation(status => ({
+    const {isModuleOpen, modulePageOpen, openModule, formError, clearErrors} = useUserStore(status => ({
         isModuleOpen: status.isModuleOpen,
         modulePageOpen: status.modulePageOpen,
         openModule: status.openModule,
