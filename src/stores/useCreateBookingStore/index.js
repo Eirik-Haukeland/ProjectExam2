@@ -14,7 +14,7 @@ export default createWithEqualityFn((set, get) => ({
             const isLoggedIn = useUserStore.getState().isLoggedIn
             
             if (!isLoggedIn) {
-                throw new Error("Pleace login to place a booking")
+                throw new Error("Please login to place a booking")
             }
 
             const accessToken = useUserStore.getState().accessToken
@@ -22,15 +22,11 @@ export default createWithEqualityFn((set, get) => ({
             
             const timeStampCheck = RegExp(/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}Z$/)
             if ( !(timeStampCheck.test(dateFrom.toISOString()) || timeStampCheck.test(dateTo.toISOString())) ) {
-                throw new Error('Pleace select the dates you want to stay')
+                throw new Error('Please select the dates you want to stay')
             }
             
             if ( guests <= 0 || guests > useCurrentVenueStore.getState().maxGuests ) {
-                throw new Error(`Pleace select an apropiate number of guests. This establishment takes 1 - ${useCurrentVenueStore.getState().maxGuests} guests)`)
-            }
-            
-            if ( venueId.length <= 0 || typeof venueId !== 'string' ) {
-                throw new Error('an error occured when trying make a booking. pleace try again')
+                throw new Error(`Please select an appropriate number of guests. This venue accepts 1 - ${useCurrentVenueStore.getState().maxGuests} guests)`)
             }
             
             const response = await fetch("https://api.noroff.dev/api/v1/holidaze/bookings", 
@@ -43,12 +39,12 @@ export default createWithEqualityFn((set, get) => ({
                         venueId
                     }),
                     headers: new Headers({
-                        'content-type': 'application/json',
+                        'Content-Type': 'application/json',
                         'Authorization': `${accessToken}`})
                 })
 
             if (!response.ok) {
-                throw new Error ('an error occured when trying make a booking. pleace try again')
+                throw new Error ('An error occured when trying make a booking. Please try again')
             }
 
             useCurrentVenueStore.getState().loadVenue(venueId)

@@ -26,16 +26,16 @@ export default createWithEqualityFn(persist((set, get) => ({
         try {
             const response = await fetch('https://api.noroff.dev/api/v1/holidaze/auth/register', {
                 method: "POST",
-                headers: new Headers({'content-type': 'application/json'}),
+                headers: new Headers({'Content-Type': 'application/json'}),
                 body: JSON.stringify(body)
             })
             const json = await response.json()
             
-            if (json.errors && json.errors[0].message === "Profile already exists") {
+            if (json.errors && json.errors[0].message) {
                 throw new Error(json.errors[0].message)
             }
             if (!response.ok) {
-                throw new Error('something went wrong when loging in to your account please try again later')
+                throw new Error('Something went wrong when loging in to your account. Please try again later')
             }
 
             set(({
@@ -60,16 +60,16 @@ export default createWithEqualityFn(persist((set, get) => ({
         try {
             const response = await fetch('https://api.noroff.dev/api/v1/holidaze/auth/login', {
                 method: "POST",
-                headers: new Headers({'content-type': 'application/json'}),
+                headers: new Headers({'Content-Type': 'application/json'}),
                 body: JSON.stringify(body)
             })
             const json = await response.json()   
-            
-            if (json.errors && json.errors[0].message === "Invalid email or password") {
+
+            if (json.errors && json.errors[0].message) {
                 throw new Error(json.errors[0].message)
             }
             if (!response.ok) {
-                throw new Error('something went wrong when loging in to your account please try again later')
+                throw new Error('Something went wrong when loging in to your account. Please try again later')
             }
 
             set(({
@@ -99,7 +99,7 @@ export default createWithEqualityFn(persist((set, get) => ({
     changeProfile: async (data, onSuccess) => {
         try {
             if (!get().accessToken.length > 0) {
-                throw new Error('user is not logged in')
+                throw new Error('User is not logged in')
             }
             const errors = []
             const setItems = {};
@@ -109,13 +109,13 @@ export default createWithEqualityFn(persist((set, get) => ({
                 const response = await fetch(`https://api.noroff.dev/api/v1/holidaze/profiles/${name}`, {
                     method: "PUT",
                     headers: new Headers({
-                        'content-type': 'application/json',
+                        'Content-Type': 'application/json',
                         'Authorization': `${get().accessToken}`}),
                     body: JSON.stringify({ venueManager: data.venueManager })
                 })
                 
                 if (!response.ok) {
-                    errors.push('something went wrong when updating venue manager status')
+                    errors.push('Something went wrong when updating venue manager status')
                 } else {
                     const { venueManager } = await response.json()
                     setItems['venueManager'] = venueManager
@@ -126,13 +126,13 @@ export default createWithEqualityFn(persist((set, get) => ({
                 const response = await fetch(`https://api.noroff.dev/api/v1/holidaze/profiles/${name}/media`, {
                     method: "PUT",
                     headers: new Headers({
-                        'content-type': 'application/json',
+                        'Content-Type': 'application/json',
                         'Authorization': `${get().accessToken}`}),
                     body: JSON.stringify({ avatar: data.avatar })
                 })
                 
                 if (!response.ok) {
-                    errors.push('something went wrong when updating profile picture status')
+                    errors.push('Something went wrong when updating profile picture status')
                 } else {
                     const { avatar } = await response.json()
                     setItems['avatar'] = avatar
@@ -148,10 +148,9 @@ export default createWithEqualityFn(persist((set, get) => ({
             onSuccess()
         } catch (error) {
             if (error.message === 'Failed to fetch') {
-                set(({formError: 'something went wrong. check if you are online or try again later'}))
+                set(({formError: 'Something went wrong. Check if you are online and try again later'}))
                 return
             }
-
 
             set(({formError: error.message}))
         }
@@ -167,18 +166,16 @@ export default createWithEqualityFn(persist((set, get) => ({
             const json = await response.json()
 
             if (!response.ok) {
-                throw new Error("something went wrong when posting a new venue please try again later")
+                throw new Error("Something went wrong when posting a new venue. Please try again later")
             }
 
             set(json)
-
-            console.warn("useAuthenticationInfromation.refreshUserData neads better error handling")
         } catch (error) {
             console.error(error.message)
         }
     }
 }), {
-    name: "auth store",
+    name: "auth_store",
     partialize: (state) => ({
         id: state.id,
         name: state.name,
@@ -186,7 +183,6 @@ export default createWithEqualityFn(persist((set, get) => ({
         avatar: state.avatar,
         venueManager: state.venueManager,
         accessToken: state.accessToken,
-        formError: state.formError,
         isLoggedIn: state.isLoggedIn,
         isModuleOpen: state.isModuleOpen,
         modulePageOpen: state.modulePageOpen,

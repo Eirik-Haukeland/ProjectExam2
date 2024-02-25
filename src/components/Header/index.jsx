@@ -21,16 +21,16 @@ export default () => {
             <Link to="/" className={HeaderCss.logo}>Holidaze</Link>
 
             <nav className={HeaderCss.menu}>
-                <Link to="/">home</Link>
+                <Link to="/">Home</Link>
                 {
                     isLoggedIn
                     ?   (<>
-                            <Link to="/profile">profile page</Link>
-                            <Link to="/" onClick={logout}>logout</Link>
+                            <Link to="/profile">Profile page</Link>
+                            <Link to="/" onClick={logout}>Logout</Link>
                         </>)
                     :   (<>
-                            <Link onClick={authModuleOpener}>login</Link>
-                            <Link onClick={authModuleOpener}>register</Link>
+                            <Link onClick={authModuleOpener}>Login</Link>
+                            <Link onClick={authModuleOpener}>Register</Link>
                         </>)    
                 }
             </nav>

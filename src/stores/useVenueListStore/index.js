@@ -25,7 +25,7 @@ export const useVenuesStore = createWithEqualityFn((set, get) => ({
             const response = await fetch(`https://api.noroff.dev/api/v1/holidaze/venues?limit=100`)
 
             if (!response.ok) {
-                throw new Error()
+                throw new Error('An error occured when trying to get venues. Please try again')
             }
             
             const json = await response.json()
@@ -38,7 +38,7 @@ export const useVenuesStore = createWithEqualityFn((set, get) => ({
 
             moreVenues()
         } catch (error) {
-            set(({venueListErrors: 'an error occured when trying to get venues. pleace try again'}))
+            set(({venueListErrors: 'An error occured when trying to get venues. Please try again'}))
         }
     },
     moreVenues: () => {
@@ -71,7 +71,7 @@ export const useVenuesStore = createWithEqualityFn((set, get) => ({
 
         const searchRegex = RegExp(searchString.toLowerCase())
         const searchResult = allVenues.filter(({name}) => searchRegex.test(name.toLowerCase()))
-        const searchError = searchResult.length >= 1 || searchString.length < 1 ? '' : 'there is no venue matching search'
+        const searchError = searchResult.length >= 1 || searchString.length < 1 ? '' : 'No venues found'
         
         set({
             searchText: searchString,

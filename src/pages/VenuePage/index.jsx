@@ -4,7 +4,7 @@ import useUserStore from "../../stores/useUserStore/index.js"
 import useCreateBookingStore from  "../../stores/useCreateBookingStore/index.js"
 import useCurrentVenueStore from "../../stores/useCurrentVenueStore/index.js"
 
-import { useEffect, useRef, useState } from "react"
+import { useEffect, useState } from "react"
 import { shallow } from "zustand/shallow"
 import ImgCarusel from "../../components/imgCarusel/index.jsx"
 import cssVenuePage from "./venuePage.module.css"
@@ -47,14 +47,14 @@ export default () => {
         shallow
     )
 
-    const {isLoggedIn, userName} = useUserStore(state => ({
+    const {isLoggedIn, username} = useUserStore(state => ({
             isLoggedIn: state.isLoggedIn,
-            userName: state.name
+            username: state.name
         }),
         shallow
     )
     
-    useEffect(() => {document.title = `Holidaze - venue: ${name}`}, [])
+    useEffect(() => {document.title = `Holidaze - Venue: ${name}`}, [])
 
     useEffect(() => {
         clearBooking()
@@ -75,12 +75,12 @@ export default () => {
                 <h1>{name}</h1>
                 <Rating/>
             </div>
-            <ImgCarusel images={media} carousel={true} classNames={cssVenuePage.img}/>
+            <ImgCarusel images={media} carusel={true} classNames={cssVenuePage.img}/>
             { 
-                userName === ownerName
+                username === ownerName
                 ? (
                     <div className={cssVenuePage.bookings}>
-                        <h2>bookings</h2>
+                        <h2>Bookings</h2>
                         {
                             bookings.length >= 1
                             ?   bookings.map(({dateFrom, dateTo, guests}) => {
@@ -90,13 +90,13 @@ export default () => {
 
                                     return (
                                         <div className={cssVenuePage.bookingCard}>
-                                            <span>guests: {guests}</span>
+                                            <span>Guests: {guests}</span>
                                             <span>Arrival: {new Date(dateFrom).toLocaleDateString()}</span>
                                             <span>Departure: {new Date(dateTo).toLocaleDateString()}</span>
                                         </div>
                                     )
                                 })
-                            : (<div className={cssVenuePage.noBookingsCard}>there are currently no bookings for this venue</div>)
+                            : (<div className={cssVenuePage.noBookingsCard}>There are currently no bookings for this venue</div>)
                         }
                     </div>
                 )
@@ -104,7 +104,7 @@ export default () => {
                     <div className={cssVenuePage.order}>
                         <Calendar></Calendar>
                         <div className={cssVenuePage.numberOfGuests}>
-                            <label htmlFor="numberOfGuests">How meny people:</label>
+                            <label htmlFor="numberOfGuests">How many people:</label>
                             <select name="numberOfGuests" id="numberOfGuests" onChange={({target: {value}}) => {setGuestNumberForBooking(Number(value))}}>
                             {
                                 Array.apply(null, Array(maxGuests)).map((_, index) => (<option key={index} value={index + 1} default={index === 0}>{index + 1} person</option>))
@@ -112,8 +112,8 @@ export default () => {
                             </select>
                         </div>
                         <div className={cssVenuePage.priceAndButton}>
-                            <span>total: ${totalPrice}</span>
-                            <button className="primary" disabled={!isLoggedIn} onClick={createABooking}>book a room</button>
+                            <span>Total: ${totalPrice}</span>
+                            <button className="primary" disabled={!isLoggedIn} onClick={createABooking}>Book a room</button>
                         </div>
                         {bookingErrors? (<span>{bookingErrors}</span>): (<></>)}
                     </div>
@@ -125,37 +125,35 @@ export default () => {
             </div>
             <table className={cssVenuePage.infoTable}>
                 <tbody>
-                    {   address !== "Unknown" 
-                        ? (
+                    {   address !== "" && (
                             <tr>
-                                <td>address</td>
+                                <td>Address</td>
                                 <td>{address}</td>
                             </tr>
                         )
-                        :(<></>)
                     }
                     <tr>
                         <td>Wifi</td>
                         <td>
-                            {hasWifi ? (<span>Awailable</span>) : (<span>Not Awailable</span>)}
+                            {hasWifi ? (<span>Available</span>) : (<span>Not available</span>)}
                         </td>
                     </tr>
                     <tr>
                         <td>Parking</td>
                         <td>
-                            {hasParking ? (<span>Awailable</span>) : (<span>Not Awailable</span>)}
+                            {hasParking ? (<span>Available</span>) : (<span>Not available</span>)}
                         </td>
                     </tr>
                     <tr>
                         <td>Breakfast</td>
                         <td>
-                            {servesBreakfast ? (<span>Awailable</span>) : (<span>Not Awailable</span>)}
+                            {servesBreakfast ? (<span>Available</span>) : (<span>Not available</span>)}
                         </td>
                     </tr>
                     <tr>
                         <td>Pets</td>
                         <td>
-                            {allowsPets ? (<span>Allowed</span>) : (<span>Not Allowed</span>)}
+                            {allowsPets ? (<span>Allowed</span>) : (<span>Not allowed</span>)}
                         </td>
                     </tr>
                 </tbody>

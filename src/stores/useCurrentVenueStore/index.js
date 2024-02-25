@@ -1,5 +1,5 @@
 import { createWithEqualityFn } from "zustand/traditional"
-import isCounty from "../../utils/isCounty"
+import isCountry from "../../utils/isCountry"
 
 export default createWithEqualityFn((set, get) => ({
     id: "",
@@ -36,10 +36,10 @@ export default createWithEqualityFn((set, get) => ({
             const json =  await response.json()
             
             if (response.status === 404) {
-                throw new Error('venue not found')    
+                throw new Error('Venue not found')    
             }
             if (!response.ok) {
-                throw new Error('problem occured when trying to get venues. plese try again later')
+                throw new Error('Problem occured when trying to get venues. Please try again later')
             }
 
             const { 
@@ -134,7 +134,7 @@ export default createWithEqualityFn((set, get) => ({
             if (newCity !== oldCity && typeof newCity === "string") { 
                 set(({ city: newCity }))
             }
-            if (newCountry !== oldCountry && typeof newCountry === "string" && isCounty(newCountry)) { 
+            if (newCountry !== oldCountry && typeof newCountry === "string" && isCountry(newCountry)) { 
                 set(({ country: newCountry }))
             }
             if (newContinent !== oldContinent && typeof newContinent === "string") { 
@@ -176,7 +176,7 @@ export default createWithEqualityFn((set, get) => ({
             }
            
         } catch (error) {
-            if (error.message === 'venue not found') {
+            if (error.message === 'Venue not found') {
                 set(({
                     fetchErrors: error.message,
                     venueNotFound: true
@@ -184,7 +184,7 @@ export default createWithEqualityFn((set, get) => ({
 
             }
 
-            set({fetchErrors: 'an error occured when trying to get the venue. pleace try again'})
+            set({fetchErrors: 'An error occured when trying to get the venue. Please try again'})
         }
         
     }

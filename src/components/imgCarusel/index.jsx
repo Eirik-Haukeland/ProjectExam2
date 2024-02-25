@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import noImage from "../../assets/No_Image_Available.jpg"
 import cssImgCarusel from "./imgCarusel.module.css"
 
-export default function ImgCarusel({images, classNames, carousel}) {
+export default function ImgCarusel({images, classNames, carusel}) {
 
     const [imageNumber, setImageNumber] = useState(0)
 
@@ -29,13 +29,21 @@ export default function ImgCarusel({images, classNames, carousel}) {
         setImageNumber(imageNumber <= 0 ? numberOfImages : imageNumber - 1)
     }
 
-    return (carousel === true && numberOfImages > 0) 
-    ?   (<div className={`${classNames} ${cssImgCarusel.carusellConteiner}`}>
-            {images.map((img, index) => (<div role="img" aria-label={`${index + 1} of ${images.length} images`} style={{backgroundImage: `url(${img})`}} hidden={index !== imageNumber} className={cssImgCarusel.carusellImg} key={`${img}--${index}`}></div>))}
-            <button onClick={prevImg}>prev</button>
-            <button onClick={nextImg}>next</button>
+    return (carusel === true && numberOfImages > 0) 
+    ?   (<div className={`${classNames} ${cssImgCarusel.caruselConteiner}`}>
+            {images.map((img, index) => (
+                <div role="img" 
+                    aria-label={`${index + 1} of ${images.length} images`} 
+                    style={{backgroundImage: `url(${img})`}} 
+                    hidden={index !== imageNumber} 
+                    className={cssImgCarusel.caruselImg} 
+                    key={`${img}--${index}`}>
+                </div>))}
+            <button onClick={prevImg}>Prev</button>
+            <button onClick={nextImg}>Next</button>
         </div>)
-    :   (<>
-            <img src={currentImg} alt={currentAlt} className={`${classNames} ${carousel ? cssImgCarusel.carusellImg : ''}`} />
-        </>)
+    :   (<img src={currentImg}
+            alt={currentAlt}
+            className={`${classNames} ${carusel ? cssImgCarusel.caruselImg : ''}`} 
+        />)
 }
