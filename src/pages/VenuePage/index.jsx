@@ -1,5 +1,9 @@
 import { useParams } from "react-router-dom"
-import { useCurrentVenue, useNewBooking, useAuthenticationInfromation } from "../../store.js"
+
+import useUserStore from "../../stores/useUserStore/index.js"
+import useCreateBookingStore from  "../../stores/useCreateBookingStore/index.js"
+import useCurrentVenueStore from "../../stores/useCurrentVenueStore/index.js"
+
 import { useEffect, useRef, useState } from "react"
 import { shallow } from "zustand/shallow"
 import ImgCarusel from "../../components/imgCarusel/index.jsx"
@@ -10,9 +14,8 @@ import noPageImg from "../../assets/404_error_img.jpeg"
 
 export default () => {
     const { venueId } = useParams()
-    const moduleRef = useRef()
 
-    const { name, description, media, price, maxGuests, hasWifi, hasParking, servesBreakfast, allowsPets, address, loadVenue, venueNotFound, fetchError, ownerName, bookings } = useCurrentVenue(
+    const { name, description, media, price, maxGuests, hasWifi, hasParking, servesBreakfast, allowsPets, address, loadVenue, venueNotFound, fetchError, ownerName, bookings } = useCurrentVenueStore(
         (state) => ({
             name: state.name,
             description: state.description,
@@ -32,7 +35,7 @@ export default () => {
         }),
         shallow
     )
-    const { setVenueIdForBooking, clearBooking, setGuestNumberForBooking, numberOfGuests, numberOfDates, createABooking, bookingErrors } = useNewBooking(state => ({
+    const { setVenueIdForBooking, clearBooking, setGuestNumberForBooking, numberOfGuests, numberOfDates, createABooking, bookingErrors } = useCreateBookingStore(state => ({
             setVenueIdForBooking: state.setVenueId,
             clearBooking: state.clearBooking,
             setGuestNumberForBooking: state.setGuests,
@@ -44,7 +47,7 @@ export default () => {
         shallow
     )
 
-    const {isLoggedIn, userName} = useAuthenticationInfromation(state => ({
+    const {isLoggedIn, userName} = useUserStore(state => ({
             isLoggedIn: state.isLoggedIn,
             userName: state.name
         }),

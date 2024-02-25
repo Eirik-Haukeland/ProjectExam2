@@ -4,7 +4,8 @@ import { Link } from "react-router-dom"
 
 import cssProfilePage from "./profilePage.module.css"
 
-import { useAuthenticationInfromation, useVenueCreateStore } from "../../store.js"
+import useUserStore from "../../stores/useUserStore/index.js"
+import useManageVenueStore from "../../stores/useManageVenueStore/index.js"
 import noProfile from "../../assets/no_profile.svg"
 import wrench from "../../assets/wrench.svg"
 import Rating from "../../components/Rating/index.jsx"
@@ -17,7 +18,7 @@ export default () => {
     const venueModuleRef = "venueModuleMain"
     const [venueCardError, setVenueCardError] = useState({})
     
-    const { avatar, name, email, venueManager, refreshUserData, venues, bookings } = useAuthenticationInfromation((state) => ({
+    const { avatar, name, email, venueManager, refreshUserData, venues, bookings } = useUserStore((state) => ({
         avatar: state.avatar,
         name: state.name,
         email: state.email,
@@ -27,7 +28,7 @@ export default () => {
         bookings: state.bookings
     }), shallow)
 
-    const { deleteVenue } = useVenueCreateStore(state => ({
+    const { deleteVenue } = useManageVenueStore(state => ({
         deleteVenue: state.deleteVenue,
     }), shallow)
    
