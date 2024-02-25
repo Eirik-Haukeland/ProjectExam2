@@ -3,7 +3,7 @@ import useUserStore from "../../../stores/useUserStore/index.js"
 import { useForm } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup'
-import cssAuth from "../Auth/auth.module.css"
+import cssRegister from "./register.module.css"
 
 const schema = yup
     .object({
@@ -38,47 +38,51 @@ export default function RegisterFrom () {
     }), shallow)
 
     const {
+        reset,
         register,
         handleSubmit,
         formState: { errors },
     } = useForm ({
-        resolver: yupResolver(schema)
+        resolver: yupResolver(schema),
+        resetOptions: {
+            keepErrors: false
+        }
     })
 
     return (
-        <form className={cssAuth.form} onSubmit={(e) => {
+        <form className={cssRegister.form} onSubmit={(e) => {
             e.preventDefault(); 
             handleSubmit(registerUser)(e);
             if (isLoggedIn) {
                 closeModule;
             }
             }}>
-            <div className={cssAuth.textInput}>
+            <div className={cssRegister.textInput}>
                 <label htmlFor="register_userName">Name:</label>
                 <input id="register_userName" autoFocus={modulePageOpen === 'register'} name="name" {...register('name')} />
-                <span className={cssAuth.error}>{errors.name?.message}</span>
+                <span className={cssRegister.error}>{errors.name?.message}</span>
             </div>
-            <div className={cssAuth.textInput}>
+            <div className={cssRegister.textInput}>
                 <label htmlFor="register_userEmail">Email:</label>
                 <input id="register_userEmail" autoComplete="username" name="email" {...register('email')} />
-                <span className={cssAuth.error}>{errors.email?.message}</span>
+                <span className={cssRegister.error}>{errors.email?.message}</span>
             </div>            
-            <div className={cssAuth.textInput}>
+            <div className={cssRegister.textInput}>
                 <label htmlFor="register_Password">Password:</label>
                 <input id="register_Password" type="password" autoComplete="new-password" name="password" {...register('password')} />
-                <span className={cssAuth.error}>{errors.password?.message}</span>
+                <span className={cssRegister.error}>{errors.password?.message}</span>
             </div>
-            <div className={cssAuth.textInput}>
+            <div className={cssRegister.textInput}>
                 <label htmlFor="register_avatar">Profile picture:</label>
                 <input id="register_avatar" name="avatar" {...register('avatar')} />
-                <span className={cssAuth.error}>{errors.avatar?.message}</span>
+                <span className={cssRegister.error}>{errors.avatar?.message}</span>
             </div>
-            <div className={cssAuth.checkboxInput}>
+            <div className={cssRegister.checkboxInput}>
                 <input type="checkbox" id="register_venueManager" name="venueManager" {...register('venueManager')}/>
                 <label htmlFor="register_venueManager">I am a venue manager</label>
-                <span className={cssAuth.error}>{errors.venueManager?.message}</span>
+                <span className={cssRegister.error}>{errors.venueManager?.message}</span>
             </div>
-            <button value="cancel" formMethod="dialog" onClick={closeModule}>Close</button>
+            <button type="button" value="cancel" onClick={() => {reset(); closeModule()}}>Close</button>
             <button type="submit" className="primary">Register</button>
         </form>
     )
