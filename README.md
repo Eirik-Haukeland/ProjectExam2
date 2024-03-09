@@ -2,7 +2,7 @@
 
 # [Project exam 2: Holidaze](https://github.com/Eirik-Haukeland/ProjectExam2)
 
-![image of site running as of march 9 2024](./image-of-site-09-03-24.png)
+[![image of site running as of march 9 2024](./image-of-site-09-03-24.png)](https://main--ebhholidaze.netlify.app/)
 
 This is my exam project for Noroff front end course. is uses [Noroff's holidaze api](https://docs.noroff.dev/docs/v1/holidaze/authentication) to simulate a hotel booking site. [The site is live on Netlify](https://main--ebhholidaze.netlify.app/)
 
