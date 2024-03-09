@@ -22,9 +22,19 @@ This is my exam project for Noroff front end course. is uses [Noroff's holidaze 
 - delete venues
 - se bookings at your venues
 
+## Built with
 
+- [react.js](https://react.dev/)
+- [Yup](https://www.npmjs.com/package/yup)
+- [vite](https://vitejs.dev/)
+- [react-date-range](https://www.npmjs.com/package/react-date-range)
+- [react-hook-form](https://react-hook-form.com/)
+- [react-router-dom](https://reactrouter.com/en/main)
+- [zustand](https://docs.pmnd.rs/zustand/getting-started/introduction)
 
-## Contributing
+## getting started
+
+### installing
 
 To work on this pojec, you need [git](https://git-scm.com/) and [npm](https://docs.npmjs.com/downloading-and-installing-node-js-and-npm).
 
@@ -33,18 +43,24 @@ After you have git and npm, run this on your local device to download this porje
 git clone https://github.com/Eirik-Haukeland/ProjectExam2
 ```
 
+then you neet to install the dependencies:
+```shell
+npm install
+```
+
+### developimet
+
 Then navigate to the folder and run the following to get a development enviorment:
 ``` shell
 npm run dev
-```
-
-Netlify will build on depolyment but you can run the following to build locally:
-```shell
-npm run build
 ```
 
 If you want to run a linter, this is available with this command:
 ```shell
 npm run lint
 ```
+
+
+## Contributing
+
 
