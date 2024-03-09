@@ -60,7 +60,6 @@ If you want to run a linter, this is available with this command:
 npm run lint
 ```
 
-
 ## Contributing
 
-
+this project is not beeing activly developped, but if you want to suggest canges please open an issue where you describe the problem you want to solve and the proposed sulution. submitt the changes to a pr and link the pr to the issue
