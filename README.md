@@ -4,9 +4,25 @@
 
 [![image of site running as of march 9 2024](./image-of-site-09-03-24.png)](https://main--ebhholidaze.netlify.app/)
 
+[Link to design](https://www.figma.com/file/FUWQP6EOiVvfkLZZhc8pMj/Untitled?type=design&node-id=2-25&mode=design&t=owE8poJBZz6Kd3l2-0)
+
+## Description
+
 This is my exam project for Noroff front end course. is uses [Noroff's holidaze api](https://docs.noroff.dev/docs/v1/holidaze/authentication) to simulate a hotel booking site. [The site is live on Netlify](https://main--ebhholidaze.netlify.app/)
 
-[Link to design](https://www.figma.com/file/FUWQP6EOiVvfkLZZhc8pMj/Untitled?type=design&node-id=2-25&mode=design&t=owE8poJBZz6Kd3l2-0)
+**what you can do:**
+- search venues 
+- look at venues
+- regiser account
+- login to you account
+- update you account
+- create bookings on venes
+- create new venues
+- update venues
+- delete venues
+- se bookings at your venues
+
+
 
 ## Contributing
 
